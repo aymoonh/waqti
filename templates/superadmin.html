@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>السوبر أدمن - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:rgba(27,200,74,.15);
+  --green-border:rgba(27,200,74,.3);
+  --accent:#0ea5e9;
+  --accent-tint:rgba(14,165,233,.15);
+  --bg:#0a1a0f;
+  --card:rgba(255,255,255,.04);
+  --border:rgba(255,255,255,.08);
+  --text:#f4ece4;
+  --text-soft:#d8cfc7;
+  --text-muted:#b8aea6;
+  --bad:#dc2626;
+  --bad-tint:rgba(220,38,38,.15);
+  --amber:#d97706;
+  --amber-tint:rgba(217,119,6,.15);
+  --radius-lg:22px;
+  --radius-md:12px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Cairo',sans-serif;
+  background:linear-gradient(160deg,#061009,#0a1a0f 55%,#071015);
+  color:var(--text);min-height:100vh;
+  padding:28px 18px 60px;
+}
+
+.container{max-width:1300px;margin:auto;}
+
+/* Header */
+.header{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:26px 32px;border-radius:var(--radius-lg);
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;flex-wrap:wrap;gap:16px;
+  position:relative;overflow:hidden;border:1px solid var(--border);
+}
+.header::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(400px 200px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+.header-title{font-size:24px;font-weight:900;position:relative;z-index:1;}
+.header-sub{color:#a7f3d0;font-size:13px;font-weight:600;margin-top:4px;position:relative;z-index:1;}
+.header-actions{display:flex;gap:10px;position:relative;z-index:1;}
+.btn-pill{
+  padding:10px 18px;border-radius:var(--radius-md);
+  text-decoration:none;font-weight:700;font-size:14px;
+  transition:transform .12s;display:inline-block;
+}
+.btn-pill:hover{transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--text-soft);}
+.btn-danger{background:var(--bad);color:white;}
+
+/* Stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:14px;margin-bottom:22px;
+}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:22px;border-radius:var(--radius-lg);text-align:center;
+  transition:transform .2s, border-color .2s;
+}
+.stat-card:hover{transform:translateY(-4px);border-color:var(--green-border);}
+.stat-icon{font-size:28px;margin-bottom:8px;}
+.stat-number{font-size:32px;font-weight:900;}
+.stat-label{color:var(--text-muted);font-size:13px;font-weight:600;margin-top:5px;}
+
+/* Search */
+.search-wrap{margin-bottom:16px;}
+.search-input{
+  width:100%;padding:13px 20px;
+  border-radius:999px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);
+  font-size:15px;font-family:'Cairo',sans-serif;outline:none;
+  transition:border-color .15s;
+}
+.search-input::placeholder{color:var(--text-muted);}
+.search-input:focus{border-color:var(--green-border);}
+
+/* Table */
+.table-wrap{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+}
+.table-header{
+  padding:18px 24px;border-bottom:1px solid var(--border);
+  font-size:17px;font-weight:800;
+}
+table{width:100%;border-collapse:collapse;}
+th{
+  padding:12px 14px;text-align:right;
+  font-size:12.5px;font-weight:700;color:var(--text-muted);
+  background:rgba(255,255,255,.02);
+  border-bottom:1px solid var(--border);
+}
+td{
+  padding:14px;font-size:13.5px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  vertical-align:middle;
+}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+.biz-name{font-weight:700;color:var(--text);font-size:14.5px;}
+.biz-slug a{color:var(--green);text-decoration:none;font-size:12px;}
+
+.badge{
+  display:inline-block;padding:3px 12px;
+  border-radius:999px;font-size:12px;font-weight:700;
+}
+.badge-active{background:var(--green-tint);color:#4ade80;border:1px solid var(--green-border);}
+.badge-inactive{background:var(--bad-tint);color:#f87171;border:1px solid rgba(220,38,38,.3);}
+.badge-free{background:rgba(255,255,255,.05);color:var(--text-muted);border:1px solid var(--border);}
+.badge-monthly{background:var(--green-tint);color:#4ade80;border:1px solid var(--green-border);}
+.badge-yearly{background:var(--accent-tint);color:#7dd3fc;border:1px solid rgba(14,165,233,.3);}
+.badge-pending{background:var(--amber-tint);color:#fbbf24;border:1px solid rgba(217,119,6,.3);}
+
+.actions{display:flex;gap:6px;flex-wrap:wrap;}
+.action-btn{
+  padding:6px 12px;border-radius:8px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  font-family:'Cairo',sans-serif;border:none;
+  transition:opacity .15s, transform .1s;
+}
+.action-btn:hover{opacity:.85;transform:translateY(-1px);}
+.btn-toggle-active{background:var(--green-tint);color:#4ade80;}
+.btn-toggle-inactive{background:var(--bad-tint);color:#f87171;}
+.btn-activate{background:var(--green-tint);color:#4ade80;}
+.btn-delete{background:var(--bad-tint);color:#f87171;}
+
+.empty-state{text-align:center;padding:50px;color:var(--text-muted);font-size:15px;}
+
+@media(max-width:768px){
+  body{padding:16px 12px 40px;}
+  th,td{padding:10px 10px;}
+  .actions{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div>
+      <div class="header-title">🛡️ لوحة السوبر أدمن</div>
+      <div class="header-sub">إدارة منصة وقتي</div>
+    </div>
+    <div class="header-actions">
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-number" id="s-users" style="color:var(--accent)">-</div>
+      <div class="stat-label">المستخدمين</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🏪</div>
+      <div class="stat-number" id="s-businesses" style="color:var(--green)">-</div>
+      <div class="stat-label">النشاطات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-number" id="s-bookings" style="color:var(--amber)">-</div>
+      <div class="stat-label">الحجوزات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💎</div>
+      <div class="stat-number" id="s-pro" style="color:#7dd3fc">-</div>
+      <div class="stat-label">مشتركين Pro</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-number" id="s-revenue" style="color:#4ade80">-</div>
+      <div class="stat-label">إيرادات شهرية $</div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <input class="search-input" id="search" placeholder="🔍 ابحث عن نشاط أو مستخدم..." oninput="filterBusinesses()">
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <div class="table-header">🏪 النشاطات (<span id="biz-count">0</span>)</div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>النشاط</th>
+            <th>المالك</th>
+            <th>الحالة</th>
+            <th>الخطة</th>
+            <th>الزيارات</th>
+            <th>الخدمات</th>
+            <th>الحجوزات</th>
+            <th>الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="biz-tbody">
+          <tr><td colspan="9" class="empty-state">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+let allBusinesses = [];
+
+async function loadData(){
+  let res = await fetch("/superadmin-data");
+  if(!res.ok){
+    document.body.innerHTML = `<div style="text-align:center;padding:100px;color:#f87171;font-family:Cairo,sans-serif;font-size:20px">🚫 غير مسموح</div>`;
+    return;
+  }
+  let data = await res.json();
+
+  animateNum("s-users",      data.users_count);
+  animateNum("s-businesses", data.businesses_count);
+  animateNum("s-bookings",   data.bookings_count);
+  animateNum("s-pro",        data.pro_count);
+  animateNum("s-revenue",    data.pro_count * 9);
+
+  allBusinesses = data.businesses;
+  renderBusinesses(allBusinesses);
+}
+
+function animateNum(id, target){
+  let el = document.getElementById(id);
+  let start = 0, step = target / (1000/16);
+  let timer = setInterval(() => {
+    start += step;
+    if(start >= target){ start = target; clearInterval(timer); }
+    el.textContent = Math.floor(start);
+  }, 16);
+}
+
+function planBadge(plan){
+  const labels = {
+    "free":             '<span class="badge badge-free">مجاني</span>',
+    "pending_monthly":  '<span class="badge badge-pending">⏳ انتظار شهري</span>',
+    "pending_yearly":   '<span class="badge badge-pending">⏳ انتظار سنوي</span>',
+    "monthly":          '<span class="badge badge-monthly">⭐ شهري</span>',
+    "yearly":           '<span class="badge badge-yearly">💎 سنوي</span>',
+  };
+  return labels[plan] || plan;
+}
+
+function renderBusinesses(businesses){
+  let tbody = document.getElementById("biz-tbody");
+  document.getElementById("biz-count").textContent = businesses.length;
+
+  if(businesses.length === 0){
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">لا يوجد نشاطات</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = businesses.map(b => `
+    <tr id="row-${b.id}">
+      <td style="color:var(--text-muted)">#${b.id}</td>
+      <td>
+        <div class="biz-name">${b.name}</div>
+        <div class="biz-slug">
+          <a href="/b/${b.slug}" target="_blank">/b/${b.slug}</a>
+        </div>
+      </td>
+      <td style="color:var(--text-soft)">${b.owner}</td>
+      <td>
+        <span class="badge ${b.is_active ? 'badge-active' : 'badge-inactive'}">
+          ${b.is_active ? '✅ مفعل' : '🔴 موقوف'}
+        </span>
+      </td>
+      <td>${planBadge(b.plan)}</td>
+      <td style="color:var(--text-soft)">${b.visits}</td>
+      <td style="color:var(--text-soft)">${b.services_count}</td>
+      <td style="color:var(--text-soft)">${b.bookings_count}</td>
+      <td>
+        <div class="actions">
+          <button class="action-btn ${b.is_active ? 'btn-toggle-inactive' : 'btn-toggle-active'}"
+            onclick="toggleActive(${b.id})">
+            ${b.is_active ? '🔴 إيقاف' : '✅ تفعيل'}
+          </button>
+          ${b.plan && b.plan.startsWith('pending') ? `
+          <button class="action-btn btn-activate" onclick="activatePlan(${b.id})">
+            ✅ تفعيل الخطة
+          </button>` : ''}
+          <button class="action-btn btn-delete" onclick="deleteBusiness(${b.id}, '${b.name}')">
+            🗑️ حذف
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function filterBusinesses(){
+  let q = document.getElementById("search").value.toLowerCase();
+  let filtered = allBusinesses.filter(b =>
+    b.name.toLowerCase().includes(q) ||
+    b.owner.toLowerCase().includes(q) ||
+    b.slug.toLowerCase().includes(q)
+  );
+  renderBusinesses(filtered);
+}
+
+async function toggleActive(id){
+  let res  = await fetch(`/superadmin/toggle-active/${id}`, {method:"PUT"});
+  let data = await res.json();
+  let b = allBusinesses.find(x => x.id === id);
+  if(b){ b.is_active = data.is_active; renderBusinesses(allBusinesses); }
+}
+
+async function activatePlan(id){
+  let res  = await fetch(`/superadmin/activate-plan/${id}`, {method:"PUT"});
+  let data = await res.json();
+  let b = allBusinesses.find(x => x.id === id);
+  if(b){
+    b.plan = data.plan;
+    let proCount = allBusinesses.filter(x => ["monthly","yearly"].includes(x.plan)).length;
+    document.getElementById("s-pro").textContent     = proCount;
+    document.getElementById("s-revenue").textContent = proCount * 9;
+    renderBusinesses(allBusinesses);
+  }
+}
+
+async function deleteBusiness(id, name){
+  if(!confirm(`هل تريد حذف نشاط "${name}" نهائياً؟`)) return;
+  await fetch(`/superadmin/delete-business/${id}`, {method:"DELETE"});
+  allBusinesses = allBusinesses.filter(x => x.id !== id);
+  document.getElementById("s-businesses").textContent = allBusinesses.length;
+  renderBusinesses(allBusinesses);
+}
+
+loadData();
+</script>
+</body>
+</html>

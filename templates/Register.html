@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنشاء حساب - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --good:#15803d;
+  --radius-lg:28px;
+  --radius-md:14px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:20px;
+}
+
+.box{
+  width:440px;
+  max-width:100%;
+  background:var(--card);
+  padding:42px;
+  border-radius:var(--radius-lg);
+  box-shadow:0 30px 70px rgba(0,0,0,.35);
+}
+
+.logo{
+  text-align:center;
+  margin-bottom:-20px;
+}
+
+.subtitle{
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:17px;
+  font-weight:600;
+  margin-bottom:28px;
+}
+
+.field-label{
+  display:block;
+  font-weight:700;
+  font-size:14px;
+  color:var(--ink);
+  margin-bottom:7px;
+}
+
+.hint{
+  font-size:12px;
+  color:var(--ink-soft);
+  font-weight:500;
+  margin:-10px 0 16px;
+}
+
+input{
+  width:100%;
+  padding:14px 16px;
+  font-size:15px;
+  border-radius:var(--radius-md);
+  border:1.5px solid var(--line);
+  margin-bottom:16px;
+  outline:none;
+  font-family:'Cairo',sans-serif;
+  background:#fffdfb;
+  color:var(--ink);
+  transition:border-color .15s, box-shadow .15s;
+}
+
+input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px var(--accent-tint);
+}
+
+input.invalid{border-color:var(--bad);}
+
+button{
+  width:100%;
+  padding:15px;
+  font-size:16px;
+  font-weight:800;
+  border:none;
+  border-radius:var(--radius-md);
+  background:var(--green);
+  color:white;
+  cursor:pointer;
+  font-family:'Cairo',sans-serif;
+  transition:background .15s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+button:hover{background:var(--green-dark);}
+button:disabled{opacity:.7;cursor:not-allowed;}
+
+.spinner{
+  width:16px;height:16px;
+  border:2.5px solid rgba(255,255,255,.4);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:none;
+}
+button.loading .spinner{display:inline-block;}
+button.loading .btn-label{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#msg{
+  margin-top:14px;
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  min-height:18px;
+}
+#msg.error{color:var(--bad);}
+#msg.success{color:var(--good);}
+
+.login{
+  margin-top:22px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+  text-align:center;
+  font-size:14px;
+  color:var(--ink-soft);
+  font-weight:600;
+}
+.login a{color:var(--accent);font-weight:800;text-decoration:none;}
+.login a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<div class="box">
+
+  <div class="logo">
+    <img src="/uploads/Waqti_logo.png" alt="وقتي" style="width:180px;height:180px;object-fit:contain;border-radius:22px;display:block;margin:0 auto;">
+  </div>
+
+  <p class="subtitle">أنشئ حسابك وابدأ استقبال الحجوزات</p>
+
+  <label class="field-label" for="username">اسم المستخدم</label>
+  <input id="username" placeholder="اسم المستخدم" autocomplete="username">
+
+  <label class="field-label" for="password">كلمة المرور</label>
+  <input id="password" type="password" placeholder="كلمة المرور" autocomplete="new-password">
+  <div class="hint">6 أحرف على الأقل</div>
+
+  <label class="field-label" for="confirm">تأكيد كلمة المرور</label>
+  <input id="confirm" type="password" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password">
+
+  <button id="registerBtn" onclick="register()">
+    <span class="spinner"></span>
+    <span class="btn-label">إنشاء الحساب</span>
+  </button>
+
+  <p id="msg"></p>
+
+  <div class="login">
+    لديك حساب بالفعل؟
+    <a href="/login">تسجيل الدخول</a>
+  </div>
+
+</div>
+
+<script>
+function setLoading(v){
+  let btn = document.getElementById("registerBtn");
+  btn.disabled = v;
+  btn.classList.toggle("loading", v);
+}
+
+async function register(){
+  let username = document.getElementById("username").value.trim();
+  let password = document.getElementById("password").value;
+  let confirm  = document.getElementById("confirm").value;
+  let msg = document.getElementById("msg");
+
+  msg.textContent = "";
+  msg.className = "";
+
+  if(!username || !password || !confirm){
+    msg.className = "error";
+    msg.textContent = "يرجى ملء جميع الحقول";
+    return;
+  }
+
+  if(password.length < 6){
+    msg.className = "error";
+    msg.textContent = "كلمة المرور يجب أن تكون 6 أحرف على الأقل";
+    document.getElementById("password").classList.add("invalid");
+    return;
+  }
+
+  if(password !== confirm){
+    msg.className = "error";
+    msg.textContent = "كلمتا المرور غير متطابقتين";
+    document.getElementById("confirm").classList.add("invalid");
+    return;
+  }
+
+  setLoading(true);
+
+  try{
+    let response = await fetch("/register",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({username, password})
+    });
+    let data = await response.json();
+
+    if(data.message === "User Created"){
+      msg.className = "success";
+      msg.textContent = "✅ تم إنشاء الحساب بنجاح";
+      setTimeout(() => { window.location = "/login"; }, 1500);
+    } else {
+      msg.className = "error";
+      msg.textContent = "❌ " + data.message;
+      setLoading(false);
+    }
+  } catch(e){
+    msg.className = "error";
+    msg.textContent = "❌ تعذر الاتصال بالخادم";
+    setLoading(false);
+  }
+}
+
+document.addEventListener("keydown", e => {
+  if(e.key === "Enter") register();
+});
+</script>
+</body>
+</html>

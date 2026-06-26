@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الخدمات - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --bad-tint:#fef2f2;
+  --amber:#d97706;
+  --amber-tint:#fffbeb;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  padding:32px 18px 60px;
+}
+
+.container{max-width:900px;margin:auto;}
+
+.header{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:26px 32px;
+  border-radius:var(--radius-lg);
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:14px;
+  position:relative;
+  overflow:hidden;
+}
+
+.header::after{
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(400px 200px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+
+.header-title{font-size:24px;font-weight:900;position:relative;z-index:1;}
+.header-sub{color:#a7f3d0;font-size:13px;font-weight:600;margin-top:4px;position:relative;z-index:1;}
+
+.header-actions{display:flex;gap:10px;position:relative;z-index:1;}
+
+.btn-pill{
+  padding:10px 18px;border-radius:12px;
+  text-decoration:none;font-weight:700;font-size:14px;
+  white-space:nowrap;transition:transform .12s;display:inline-block;
+}
+.btn-pill:hover{transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#f4ece4;}
+.btn-danger{background:var(--bad);color:white;}
+
+/* Add form */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:26px;
+  border-radius:var(--radius-lg);
+  margin-bottom:20px;
+}
+
+.card-title{font-size:19px;font-weight:800;margin-bottom:18px;}
+
+.form-row{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr auto;
+  gap:12px;
+  align-items:end;
+}
+
+.field-label{
+  display:block;font-weight:700;
+  font-size:13.5px;color:var(--ink);
+  margin-bottom:6px;
+}
+
+input{
+  width:100%;padding:13px 16px;
+  font-size:15px;border-radius:var(--radius-md);
+  border:1.5px solid var(--line);outline:none;
+  font-family:'Cairo',sans-serif;
+  background:#fffdfb;color:var(--ink);
+  transition:border-color .15s, box-shadow .15s;
+  box-sizing:border-box;
+}
+input::placeholder{color:#b9b0a7;}
+input:focus{border-color:var(--green);box-shadow:0 0 0 4px var(--green-tint);}
+
+.add-btn{
+  padding:13px 22px;
+  border:none;border-radius:var(--radius-md);
+  background:var(--green);color:white;
+  font-weight:800;font-size:15px;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  white-space:nowrap;transition:background .15s;
+  height:50px;
+}
+.add-btn:hover{background:var(--green-dark);}
+
+#form-msg{
+  font-size:13px;font-weight:700;
+  color:var(--bad);margin-top:8px;min-height:16px;
+}
+
+/* Services list */
+.service-card{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 20px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-md);
+  margin-bottom:10px;
+  background:var(--card);
+  transition:box-shadow .15s;
+  flex-wrap:wrap;gap:12px;
+}
+.service-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07);}
+
+.service-info .name{font-size:17px;font-weight:800;}
+.service-info .meta{
+  display:flex;gap:12px;
+  color:var(--ink-soft);font-size:13px;font-weight:600;
+  margin-top:5px;
+}
+
+.meta-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:3px 10px;border-radius:999px;
+}
+
+.service-actions{display:flex;gap:8px;}
+
+.sbtn{
+  padding:8px 16px;border-radius:10px;
+  font-weight:700;font-size:13px;
+  cursor:pointer;border:none;
+  font-family:'Cairo',sans-serif;
+  transition:opacity .15s;
+}
+.sbtn:hover{opacity:.85;}
+.sbtn-edit{background:var(--accent-tint);color:var(--accent-dark);}
+.sbtn-delete{background:var(--bad-tint);color:var(--bad);}
+
+.empty-state{
+  text-align:center;padding:50px 20px;
+  color:var(--ink-soft);font-size:15px;
+}
+
+/* Modal */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(15,12,11,.55);
+  justify-content:center;align-items:center;
+  z-index:999;padding:20px;
+}
+.modal-box{
+  background:white;width:100%;max-width:420px;
+  padding:28px;border-radius:var(--radius-lg);
+}
+.modal-box h2{text-align:center;margin:0 0 20px;font-size:20px;font-weight:800;}
+
+.main-btn{
+  width:100%;padding:14px;border:none;
+  border-radius:var(--radius-md);
+  background:var(--green);color:white;
+  font-size:15.5px;font-weight:800;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:background .15s;margin-bottom:8px;
+}
+.main-btn:hover{background:var(--green-dark);}
+
+.cancel-btn{
+  width:100%;padding:13px;border:none;
+  border-radius:var(--radius-md);
+  background:var(--paper);color:var(--ink);
+  font-size:15px;font-weight:700;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+}
+.cancel-btn:hover{background:var(--line);}
+
+@media(max-width:640px){
+  .form-row{grid-template-columns:1fr 1fr;}
+  .add-btn{grid-column:1/-1;}
+  body{padding:16px 12px 40px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div>
+      <div class="header-title">✂️ الخدمات</div>
+      <div class="header-sub">{{ business.name }}</div>
+    </div>
+    <div class="header-actions">
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+    </div>
+  </div>
+
+  <!-- إضافة خدمة -->
+  <div class="card">
+    <div class="card-title">➕ إضافة خدمة جديدة</div>
+    <div class="form-row">
+      <div>
+        <label class="field-label" for="svc-name">اسم الخدمة</label>
+        <input id="svc-name" placeholder="مثال: قصة شعر">
+      </div>
+      <div>
+        <label class="field-label" for="svc-duration">المدة (دقيقة)</label>
+        <input id="svc-duration" type="number" min="5" placeholder="30">
+      </div>
+      <div>
+        <label class="field-label" for="svc-price">السعر</label>
+        <input id="svc-price" type="number" min="0" placeholder="0">
+      </div>
+      <button class="add-btn" onclick="addService()">➕ إضافة</button>
+    </div>
+    <div id="form-msg"></div>
+  </div>
+
+  <!-- قائمة الخدمات -->
+  <div class="card">
+    <div class="card-title">📋 الخدمات الحالية</div>
+    <div id="services-list">
+
+      {% for s in services %}
+      <div class="service-card" id="svc-{{ s.id }}">
+        <div class="service-info">
+          <div class="name">{{ s.name }}</div>
+          <div class="meta">
+            <span class="meta-badge">⏱️ {{ s.duration }} دقيقة</span>
+            {% if s.price > 0 %}
+            <span class="meta-badge">💰 {{ s.price|int }}</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="service-actions">
+          <button class="sbtn sbtn-edit" onclick="openEdit({{ s.id }}, '{{ s.name }}', {{ s.duration }}, {{ s.price }})">تعديل</button>
+          <button class="sbtn sbtn-delete" onclick="deleteService({{ s.id }})">حذف</button>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-state" id="empty-msg">لا توجد خدمات بعد — أضف خدمتك الأولى من الأعلى</div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal تعديل -->
+<div id="editModal" class="modal-overlay">
+  <div class="modal-box">
+    <h2>✏️ تعديل الخدمة</h2>
+    <label class="field-label">اسم الخدمة</label>
+    <input id="edit-name" placeholder="اسم الخدمة" style="margin-bottom:12px;">
+    <label class="field-label">المدة (دقيقة)</label>
+    <input id="edit-duration" type="number" min="5" placeholder="30" style="margin-bottom:12px;">
+    <label class="field-label">السعر</label>
+    <input id="edit-price" type="number" min="0" placeholder="0" style="margin-bottom:18px;">
+    <button class="main-btn" onclick="saveEdit()">حفظ التعديلات</button>
+    <button class="cancel-btn" onclick="closeEdit()">إلغاء</button>
+  </div>
+</div>
+
+<script>
+
+let editingId = null;
+
+async function addService(){
+  let name     = document.getElementById("svc-name").value.trim();
+  let duration = parseInt(document.getElementById("svc-duration").value);
+  let price    = parseFloat(document.getElementById("svc-price").value) || 0;
+  let msg      = document.getElementById("form-msg");
+
+  msg.textContent = "";
+
+  if(!name){ msg.textContent = "أدخل اسم الخدمة"; return; }
+  if(!duration || duration < 5){ msg.textContent = "المدة يجب أن تكون 5 دقائق على الأقل"; return; }
+
+  let res = await fetch("/services",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({name, duration, price})
+  });
+
+  let data = await res.json();
+
+  if(res.ok){
+    document.getElementById("svc-name").value = "";
+    document.getElementById("svc-duration").value = "";
+    document.getElementById("svc-price").value = "";
+
+    // إضافة الكارد مباشرة بدون reload
+    let list = document.getElementById("services-list");
+    let empty = document.getElementById("empty-msg");
+    if(empty) empty.remove();
+
+    let card = document.createElement("div");
+    card.className = "service-card";
+    card.id = "svc-" + data.id;
+    card.innerHTML = `
+      <div class="service-info">
+        <div class="name">${name}</div>
+        <div class="meta">
+          <span class="meta-badge">⏱️ ${duration} دقيقة</span>
+          ${price > 0 ? `<span class="meta-badge">💰 ${price}</span>` : ""}
+        </div>
+      </div>
+      <div class="service-actions">
+        <button class="sbtn sbtn-edit" onclick="openEdit(${data.id}, '${name}', ${duration}, ${price})">تعديل</button>
+        <button class="sbtn sbtn-delete" onclick="deleteService(${data.id})">حذف</button>
+      </div>`;
+    list.appendChild(card);
+  } else {
+    msg.textContent = "❌ " + data.message;
+  }
+}
+
+function openEdit(id, name, duration, price){
+  editingId = id;
+  document.getElementById("edit-name").value = name;
+  document.getElementById("edit-duration").value = duration;
+  document.getElementById("edit-price").value = price;
+  document.getElementById("editModal").style.display = "flex";
+}
+
+function closeEdit(){
+  document.getElementById("editModal").style.display = "none";
+  editingId = null;
+}
+
+async function saveEdit(){
+  let name     = document.getElementById("edit-name").value.trim();
+  let duration = parseInt(document.getElementById("edit-duration").value);
+  let price    = parseFloat(document.getElementById("edit-price").value) || 0;
+
+  let res = await fetch("/services/" + editingId,{
+    method:"PUT",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({name, duration, price})
+  });
+
+  if(res.ok){
+    location.reload();
+  } else {
+    let data = await res.json();
+    alert("❌ " + data.message);
+  }
+}
+
+async function deleteService(id){
+  if(!confirm("هل تريد حذف هذه الخدمة؟")) return;
+  let res = await fetch("/services/" + id, {method:"DELETE"});
+  if(res.ok){
+    document.getElementById("svc-" + id).remove();
+    let list = document.getElementById("services-list");
+    if(list.children.length === 0){
+      list.innerHTML = '<div class="empty-state">لا توجد خدمات بعد</div>';
+    }
+  }
+}
+
+</script>
+</body>
+</html>

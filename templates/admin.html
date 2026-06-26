@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة التحكم - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --bad-tint:#fef2f2;
+  --amber:#d97706;
+  --amber-tint:#fffbeb;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  padding:32px 18px 60px;
+}
+
+.container{max-width:1200px;margin:auto;}
+
+/* Header */
+.header{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  border-radius:var(--radius-lg);
+  padding:28px 32px;
+  color:white;
+  position:relative;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+
+.header::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(420px 220px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+
+.header-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  position:relative;
+  z-index:1;
+  flex-wrap:wrap;
+}
+
+.business-info{display:flex;align-items:center;gap:16px;}
+
+.business-logo{
+  width:64px;height:64px;
+  border-radius:16px;
+  background:white;
+  padding:6px;
+  object-fit:contain;
+  flex:none;
+  box-shadow:0 6px 16px rgba(0,0,0,.25);
+}
+
+.business-name{font-size:26px;font-weight:900;}
+.business-cat{color:#a7f3d0;font-size:13px;font-weight:600;margin-top:4px;}
+
+.header-actions{
+  display:flex;gap:10px;
+  position:relative;z-index:1;
+  flex-wrap:wrap;
+}
+
+.btn-pill{
+  padding:10px 18px;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:14px;
+  white-space:nowrap;
+  transition:transform .12s;
+  display:inline-block;
+}
+.btn-pill:hover{transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#f4ece4;}
+.btn-danger{background:var(--bad);color:white;}
+
+/* رابط المتجر */
+.header-link{
+  position:relative;z-index:1;
+  margin-top:18px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+
+.link-url{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:12px;
+  padding:10px 16px;
+  font-size:14px;font-weight:600;
+  color:#f4ece4;text-decoration:none;flex:1;min-width:220px;
+}
+.link-url:hover{background:rgba(255,255,255,.13);}
+
+.copy-btn{
+  background:var(--green);color:white;
+  padding:10px 18px;border-radius:12px;
+  border:none;cursor:pointer;
+  font-weight:700;font-size:14px;
+  font-family:'Cairo',sans-serif;
+  transition:background .15s;
+  white-space:nowrap;
+}
+.copy-btn:hover{background:var(--green-dark);}
+.copy-btn.copied{background:var(--accent);}
+
+/* Quick actions */
+.quick-actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:24px;
+}
+
+.qa-link{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 12px;
+  border-radius:var(--radius-md);
+  text-decoration:none;
+  font-weight:700;font-size:14px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  transition:transform .12s, box-shadow .12s;
+}
+.qa-link:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.07);}
+.qa-link.qa-bookings{color:var(--accent);}
+.qa-link.qa-services{color:var(--green-dark);}
+.qa-link.qa-hours{color:var(--amber);}
+.qa-link.qa-settings{color:var(--ink);}
+
+.qa-badge{
+  background:var(--bad);color:white;
+  border-radius:999px;padding:1px 8px;
+  font-size:12px;font-weight:800;display:none;
+}
+.qa-badge.show{display:inline-block;}
+
+/* Stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:14px;
+  margin-bottom:24px;
+}
+
+.stat-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:22px 20px;
+  border-radius:var(--radius-lg);
+  text-align:center;
+  transition:transform .2s;
+}
+.stat-card:hover{transform:translateY(-4px);}
+.stat-icon{font-size:30px;margin-bottom:8px;}
+.stat-number{font-size:34px;font-weight:900;}
+.stat-label{color:var(--ink-soft);font-size:13px;font-weight:600;margin-top:5px;}
+
+/* Bookings */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:24px;
+  border-radius:var(--radius-lg);
+  margin-bottom:20px;
+}
+
+.card-title{font-size:19px;font-weight:800;margin-bottom:18px;}
+
+.booking-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-md);
+  margin-bottom:10px;
+  flex-wrap:wrap;gap:10px;
+}
+
+.booking-info .name{font-weight:800;font-size:15px;}
+.booking-info .meta{color:var(--ink-soft);font-size:13px;margin-top:3px;}
+
+.status-pill{
+  padding:6px 14px;border-radius:999px;
+  font-size:13px;font-weight:800;
+}
+
+.empty-state{
+  text-align:center;padding:40px;
+  color:var(--ink-soft);font-size:15px;
+}
+
+@media(max-width:760px){
+  .quick-actions{grid-template-columns:repeat(2,1fr);}
+  .header{padding:22px;}
+  .business-name{font-size:20px;}
+}
+
+@media(max-width:480px){
+  body{padding:16px 12px 40px;}
+  .card{padding:18px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="business-info">
+        <img class="business-logo" src="{{ business.logo_url or '/uploads/Waqti_logo.png' }}">
+        <div>
+          <div class="business-name">{{ business.name }}</div>
+          <div class="business-cat">{{ business.category }}</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      </div>
+    </div>
+
+    <div class="header-link">
+      <a class="link-url" href="/b/{{ business.slug }}" target="_blank">
+        🌐 waqti.app/{{ business.slug }}
+      </a>
+      <button id="copyBtn" class="copy-btn" onclick="copyLink()">نسخ الرابط</button>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <a href="/bookings" class="qa-link qa-bookings">
+      📅 الحجوزات
+      <span id="new-bookings-badge" class="qa-badge"></span>
+    </a>
+    <a href="/services" class="qa-link qa-services">
+      ✂️ الخدمات
+    </a>
+    <a href="/working-hours" class="qa-link qa-hours">
+      🕐 أوقات العمل
+    </a>
+    <a href="/business-settings" class="qa-link qa-settings">
+      ⚙️ الإعدادات
+    </a>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-number" id="total-bookings" style="color:var(--accent)">-</div>
+      <div class="stat-label">إجمالي الحجوزات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🆕</div>
+      <div class="stat-number" id="today-bookings" style="color:var(--green)">-</div>
+      <div class="stat-label">حجوزات اليوم</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✂️</div>
+      <div class="stat-number" id="services-count" style="color:var(--amber)">-</div>
+      <div class="stat-label">عدد الخدمات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">👁️</div>
+      <div class="stat-number" id="visits-count" style="color:var(--ink-soft)">-</div>
+      <div class="stat-label">الزيارات</div>
+    </div>
+  </div>
+
+  <!-- أحدث الحجوزات -->
+  <div class="card">
+    <div class="card-title">📋 أحدث الحجوزات</div>
+    <div id="recent-bookings">
+      <div class="empty-state">جاري التحميل...</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+function copyLink(){
+  navigator.clipboard.writeText("https://waqti.app/{{ business.slug }}");
+  let btn = document.getElementById("copyBtn");
+  btn.textContent = "✓ تم النسخ";
+  btn.classList.add("copied");
+  setTimeout(() => {
+    btn.textContent = "نسخ الرابط";
+    btn.classList.remove("copied");
+  }, 2000);
+}
+
+async function loadStats(){
+  try{
+    let res = await fetch("/admin-stats");
+    let data = await res.json();
+
+    document.getElementById("total-bookings").textContent = data.total_bookings;
+    document.getElementById("today-bookings").textContent = data.today_bookings;
+    document.getElementById("services-count").textContent = data.services_count;
+    document.getElementById("visits-count").textContent = data.visits;
+
+    if(data.today_bookings > 0){
+      let badge = document.getElementById("new-bookings-badge");
+      badge.textContent = data.today_bookings;
+      badge.classList.add("show");
+    }
+
+    renderRecentBookings(data.recent_bookings);
+
+  } catch(e){
+    console.error(e);
+  }
+}
+
+function renderRecentBookings(bookings){
+  let el = document.getElementById("recent-bookings");
+
+  if(!bookings || bookings.length === 0){
+    el.innerHTML = '<div class="empty-state">📭 لا يوجد حجوزات بعد</div>';
+    return;
+  }
+
+  const STATUS_COLORS = {
+    "مؤكد":    {bg:"var(--green-tint)", color:"var(--green-dark)"},
+    "ملغي":    {bg:"var(--bad-tint)",   color:"var(--bad)"},
+    "مكتمل":   {bg:"var(--accent-tint)",color:"var(--accent-dark)"},
+  };
+
+  el.innerHTML = bookings.map(b => {
+    let s = STATUS_COLORS[b.status] || STATUS_COLORS["مؤكد"];
+    let waLink = "https://wa.me/" + b.customer_phone.replace(/[^0-9]/g,'');
+    return `
+    <div class="booking-item">
+      <div class="booking-info">
+        <div class="name">👤 ${b.customer_name}</div>
+        <div class="meta">✂️ ${b.service_name} &nbsp;|&nbsp; 📅 ${b.date} ${b.time}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span class="status-pill" style="background:${s.bg};color:${s.color}">${b.status}</span>
+        <a href="${waLink}" target="_blank" style="background:#25D366;color:white;padding:7px 14px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;">💬 واتساب</a>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+loadStats();
+
+</script>
+</body>
+</html>

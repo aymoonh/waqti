@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>أوقات العمل - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --bad-tint:#fef2f2;
+  --good:#15803d;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  padding:32px 18px 60px;
+}
+
+.container{max-width:760px;margin:auto;}
+
+.header{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:26px 32px;
+  border-radius:var(--radius-lg);
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  flex-wrap:wrap;gap:14px;
+  position:relative;overflow:hidden;
+}
+.header::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(400px 200px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+.header-title{font-size:24px;font-weight:900;position:relative;z-index:1;}
+.header-sub{color:#a7f3d0;font-size:13px;font-weight:600;margin-top:4px;position:relative;z-index:1;}
+.header-actions{display:flex;gap:10px;position:relative;z-index:1;}
+.btn-pill{
+  padding:10px 18px;border-radius:12px;
+  text-decoration:none;font-weight:700;font-size:14px;
+  white-space:nowrap;transition:transform .12s;display:inline-block;
+}
+.btn-pill:hover{transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#f4ece4;}
+.btn-danger{background:var(--bad);color:white;}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:28px 32px;
+  border-radius:var(--radius-lg);
+  margin-bottom:16px;
+}
+.card-title{font-size:19px;font-weight:800;margin-bottom:20px;}
+
+/* Day row */
+.day-row{
+  display:grid;
+  grid-template-columns:130px 1fr 1fr 80px;
+  align-items:center;
+  gap:12px;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+}
+.day-row:last-child{border-bottom:none;}
+
+.day-name{font-weight:800;font-size:15px;}
+
+.time-input{
+  width:100%;padding:10px 12px;
+  font-size:14px;border-radius:var(--radius-md);
+  border:1.5px solid var(--line);outline:none;
+  font-family:'Cairo',sans-serif;
+  background:#fffdfb;color:var(--ink);
+  transition:border-color .15s, box-shadow .15s;
+}
+.time-input:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 3px var(--green-tint);
+}
+.time-input:disabled{
+  background:var(--line);color:var(--ink-soft);
+  cursor:not-allowed;
+}
+
+/* Toggle */
+.toggle-wrap{display:flex;justify-content:center;}
+
+.toggle{
+  position:relative;
+  width:48px;height:26px;
+  flex:none;
+}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;
+  background:#d1d5db;border-radius:999px;
+  cursor:pointer;transition:background .2s;
+}
+.toggle-slider::before{
+  content:"";
+  position:absolute;
+  width:20px;height:20px;
+  left:3px;top:3px;
+  background:white;border-radius:50%;
+  transition:transform .2s;
+}
+.toggle input:checked + .toggle-slider{background:var(--green);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(22px);}
+
+.closed-label{
+  font-size:13px;font-weight:700;
+  color:var(--ink-soft);text-align:center;
+}
+
+/* Save button */
+.save-btn{
+  width:100%;padding:15px;border:none;
+  border-radius:var(--radius-md);
+  background:var(--green);color:white;
+  font-size:16px;font-weight:800;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:background .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.save-btn:hover{background:var(--green-dark);}
+.save-btn:disabled{opacity:.7;cursor:not-allowed;}
+
+.spinner{
+  width:16px;height:16px;
+  border:2.5px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;display:none;
+}
+.save-btn.loading .spinner{display:inline-block;}
+.save-btn.loading .btn-label{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#msg{
+  text-align:center;margin-top:12px;
+  font-size:14px;font-weight:700;min-height:18px;
+}
+#msg.success{color:var(--good);}
+#msg.error{color:var(--bad);}
+
+@media(max-width:540px){
+  .day-row{grid-template-columns:100px 1fr 1fr 60px;gap:8px;}
+  .day-name{font-size:13px;}
+  body{padding:16px 12px 40px;}
+  .card{padding:18px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div>
+      <div class="header-title">🕐 أوقات العمل</div>
+      <div class="header-sub">{{ business.name }}</div>
+    </div>
+    <div class="header-actions">
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📅 حدد أوقات دوامك لكل يوم</div>
+
+    {% set day_names = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"] %}
+
+    {% for h in hours %}
+    <div class="day-row" id="row-{{ h.id }}">
+
+      <div class="day-name">{{ day_names[h.day] }}</div>
+
+      <div>
+        <input type="time" class="time-input" id="open-{{ h.id }}"
+          value="{{ h.open_time }}"
+          {% if not h.is_open %}disabled{% endif %}>
+      </div>
+
+      <div>
+        <input type="time" class="time-input" id="close-{{ h.id }}"
+          value="{{ h.close_time }}"
+          {% if not h.is_open %}disabled{% endif %}>
+      </div>
+
+      <div class="toggle-wrap">
+        <label class="toggle">
+          <input type="checkbox" id="toggle-{{ h.id }}"
+            {% if h.is_open %}checked{% endif %}
+            onchange="toggleDay({{ h.id }}, this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+    </div>
+    {% endfor %}
+
+    <div style="margin-top:6px;color:var(--ink-soft);font-size:12.5px;font-weight:600;text-align:center;">
+      المفتاح = مفتوح ✅ &nbsp;|&nbsp; مغلق = إجازة 🔴
+    </div>
+
+  </div>
+
+  <button class="save-btn" id="saveBtn" onclick="saveHours()">
+    <span class="spinner"></span>
+    <span class="btn-label">💾 حفظ أوقات العمل</span>
+  </button>
+
+  <p id="msg"></p>
+
+</div>
+
+<script>
+
+const hourIds = [{% for h in hours %}{{ h.id }}{% if not loop.last %},{% endif %}{% endfor %}];
+
+function toggleDay(id, isOpen){
+  document.getElementById("open-"  + id).disabled = !isOpen;
+  document.getElementById("close-" + id).disabled = !isOpen;
+}
+
+function setLoading(v){
+  let btn = document.getElementById("saveBtn");
+  btn.disabled = v;
+  btn.classList.toggle("loading", v);
+}
+
+async function saveHours(){
+
+  let hours = hourIds.map(id => ({
+    id:         id,
+    is_open:    document.getElementById("toggle-" + id).checked ? 1 : 0,
+    open_time:  document.getElementById("open-"   + id).value || "09:00",
+    close_time: document.getElementById("close-"  + id).value || "21:00"
+  }));
+
+  setLoading(true);
+
+  try{
+    let res = await fetch("/working-hours",{
+      method:"PUT",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({hours})
+    });
+
+    let data = await res.json();
+    let msg = document.getElementById("msg");
+
+    if(res.ok){
+      msg.className = "success";
+      msg.textContent = "✅ تم حفظ أوقات العمل بنجاح";
+    } else {
+      msg.className = "error";
+      msg.textContent = "❌ " + data.message;
+    }
+  } catch(e){
+    let msg = document.getElementById("msg");
+    msg.className = "error";
+    msg.textContent = "❌ تعذر الاتصال بالخادم";
+  } finally {
+    setLoading(false);
+  }
+}
+</script>
+</body>
+</html>

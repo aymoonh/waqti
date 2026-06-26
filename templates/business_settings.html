@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>إعدادات النشاط - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --bad-tint:#fef2f2;
+  --good:#15803d;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  padding:32px 18px 60px;
+}
+
+.container{max-width:760px;margin:auto;}
+
+.header{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:26px 32px;
+  border-radius:var(--radius-lg);
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:14px;
+  position:relative;
+  overflow:hidden;
+}
+
+.header::after{
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(400px 200px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+
+.header-title{font-size:24px;font-weight:900;position:relative;z-index:1;}
+.header-sub{color:#a7f3d0;font-size:13px;font-weight:600;margin-top:4px;position:relative;z-index:1;}
+.header-actions{display:flex;gap:10px;position:relative;z-index:1;}
+
+.btn-pill{
+  padding:10px 18px;border-radius:12px;
+  text-decoration:none;font-weight:700;font-size:14px;
+  white-space:nowrap;transition:transform .12s;display:inline-block;
+}
+.btn-pill:hover{transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#f4ece4;}
+.btn-danger{background:var(--bad);color:white;}
+
+/* Preview */
+.preview{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--radius-lg);
+  padding:20px 24px;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.preview::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(360px 180px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+.preview-logo{
+  width:56px;height:56px;border-radius:14px;
+  background:#fff;padding:6px;object-fit:contain;
+  flex:none;position:relative;z-index:1;
+}
+.preview-info{position:relative;z-index:1;min-width:0;}
+.preview-name{color:#fff;font-weight:900;font-size:18px;}
+.preview-meta{color:#a7f3d0;font-size:12.5px;font-weight:600;margin-top:3px;}
+.preview-label{
+  position:relative;z-index:1;margin-right:auto;
+  color:rgba(255,255,255,.4);font-size:11px;font-weight:700;
+  border:1px dashed rgba(255,255,255,.2);
+  padding:4px 10px;border-radius:999px;flex:none;
+}
+
+/* Card */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:28px 32px;
+  border-radius:var(--radius-lg);
+  margin-bottom:16px;
+}
+
+.card-title{font-size:19px;font-weight:800;margin-bottom:20px;}
+
+.field{margin-bottom:18px;}
+
+.field-label{
+  display:block;font-weight:700;
+  font-size:14px;color:var(--ink);margin-bottom:7px;
+}
+
+.hint{font-size:12px;color:var(--ink-soft);font-weight:500;margin-top:-12px;margin-bottom:16px;}
+
+input, select{
+  width:100%;padding:14px 16px;
+  font-size:15px;border-radius:var(--radius-md);
+  border:1.5px solid var(--line);outline:none;
+  font-family:'Cairo',sans-serif;
+  background:#fffdfb;color:var(--ink);
+  transition:border-color .15s, box-shadow .15s;
+  box-sizing:border-box;
+}
+input::placeholder{color:#b9b0a7;}
+input:focus, select:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 4px var(--green-tint);
+}
+
+select{
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%236b6360' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:left 16px center;
+  padding-left:38px;
+}
+
+/* slug */
+.slug-wrap{
+  display:flex;align-items:stretch;
+  border:1.5px solid var(--line);
+  border-radius:var(--radius-md);
+  overflow:hidden;background:#fffdfb;
+  transition:border-color .15s, box-shadow .15s;
+}
+.slug-wrap:focus-within{
+  border-color:var(--green);
+  box-shadow:0 0 0 4px var(--green-tint);
+}
+.slug-prefix{
+  display:flex;align-items:center;
+  padding:0 14px;background:var(--line);
+  color:var(--ink-soft);font-size:13px;font-weight:700;white-space:nowrap;
+}
+.slug-wrap input{border:none;border-radius:0;box-shadow:none !important;}
+
+/* logo */
+.logo-row{display:flex;align-items:center;gap:12px;}
+.logo-preview-sm{
+  width:52px;height:52px;border-radius:12px;
+  border:1.5px dashed var(--line);
+  object-fit:contain;padding:5px;flex:none;background:#fff;
+}
+.file-btn{
+  position:relative;flex:1;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border:1.5px dashed var(--line);border-radius:var(--radius-md);
+  padding:12px 16px;font-size:14px;font-weight:600;
+  color:var(--ink-soft);background:#fffdfb;cursor:pointer;
+  transition:border-color .15s, color .15s;
+}
+.file-btn:hover{border-color:var(--green);color:var(--green-dark);}
+.file-btn input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;}
+
+/* save btn */
+.save-btn{
+  width:100%;padding:15px;border:none;
+  border-radius:var(--radius-md);
+  background:var(--green);color:white;
+  font-size:16px;font-weight:800;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:background .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.save-btn:hover{background:var(--green-dark);}
+.save-btn:disabled{opacity:.7;cursor:not-allowed;}
+
+.spinner{
+  width:16px;height:16px;
+  border:2.5px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;display:none;
+}
+.save-btn.loading .spinner{display:inline-block;}
+.save-btn.loading .btn-label{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#msg{
+  text-align:center;margin-top:12px;
+  font-size:14px;font-weight:700;min-height:18px;
+}
+#msg.success{color:var(--good);}
+#msg.error{color:var(--bad);}
+
+.footer-row{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:20px;padding-top:18px;border-top:1px solid var(--line);
+}
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  text-decoration:none;font-weight:700;font-size:14px;color:var(--ink);
+}
+.back-link:hover{color:var(--green-dark);}
+
+@media(max-width:540px){
+  body{padding:16px 12px 40px;}
+  .card{padding:20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div>
+      <div class="header-title">⚙️ إعدادات النشاط</div>
+      <div class="header-sub">{{ business.name }}</div>
+    </div>
+    <div class="header-actions">
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+    </div>
+  </div>
+
+  <!-- معاينة حية -->
+  <div class="preview">
+    <img id="previewLogo" class="preview-logo" src="{{ business.logo_url or '/uploads/Waqti_logo.png' }}" alt="">
+    <div class="preview-info">
+      <div class="preview-name" id="previewName">{{ business.name }}</div>
+      <div class="preview-meta" id="previewSlug">waqti.app/{{ business.slug }}</div>
+    </div>
+    <span class="preview-label">معاينة حية</span>
+  </div>
+
+  <!-- الإعدادات الأساسية -->
+  <div class="card">
+    <div class="card-title">📋 المعلومات الأساسية</div>
+
+    <div class="field">
+      <label class="field-label" for="name">اسم النشاط</label>
+      <input id="name" value="{{ business.name }}" oninput="document.getElementById('previewName').textContent=this.value||'اسم النشاط'">
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="whatsapp">رقم الواتساب</label>
+      <input id="whatsapp" value="{{ business.whatsapp }}" placeholder="‎+970 59 000 0000" inputmode="tel">
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="slug">رابط صفحة الحجز</label>
+      <div class="slug-wrap">
+        <span class="slug-prefix">waqti.app/</span>
+        <input id="slug" value="{{ business.slug }}" oninput="onSlugInput()">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="currency">العملة</label>
+      <select id="currency" required>
+        <option value="" {% if not business.currency %}selected{% endif %} disabled>— اختر العملة —</option>
+        <option value="ILS" {% if business.currency == 'ILS' %}selected{% endif %}>ILS — شيكل إسرائيلي ₪</option>
+        <option value="USD" {% if business.currency == 'USD' %}selected{% endif %}>USD — دولار أمريكي $</option>
+        <option value="EUR" {% if business.currency == 'EUR' %}selected{% endif %}>EUR — يورو €</option>
+        <option value="JOD" {% if business.currency == 'JOD' %}selected{% endif %}>JOD — دينار أردني</option>
+        <option value="EGP" {% if business.currency == 'EGP' %}selected{% endif %}>EGP — جنيه مصري</option>
+        <option value="SAR" {% if business.currency == 'SAR' %}selected{% endif %}>SAR — ريال سعودي</option>
+        <option value="AED" {% if business.currency == 'AED' %}selected{% endif %}>AED — درهم إماراتي</option>
+        <option value="KWD" {% if business.currency == 'KWD' %}selected{% endif %}>KWD — دينار كويتي</option>
+        <option value="BHD" {% if business.currency == 'BHD' %}selected{% endif %}>BHD — دينار بحريني</option>
+        <option value="QAR" {% if business.currency == 'QAR' %}selected{% endif %}>QAR — ريال قطري</option>
+        <option value="OMR" {% if business.currency == 'OMR' %}selected{% endif %}>OMR — ريال عماني</option>
+        <option value="IQD" {% if business.currency == 'IQD' %}selected{% endif %}>IQD — دينار عراقي</option>
+        <option value="GBP" {% if business.currency == 'GBP' %}selected{% endif %}>GBP — جنيه إسترليني £</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="field-label">الشعار</label>
+      <div class="logo-row">
+        <img id="logoPreviewSm" class="logo-preview-sm" src="{{ business.logo_url or '/uploads/Waqti_logo.png' }}" alt="">
+        <div class="file-btn">
+          <span>📁</span>
+          <span id="fileLabel">اختر صورة الشعار</span>
+          <input type="file" id="logo_file" accept="image/*" onchange="onLogoChange()">
+        </div>
+      </div>
+    </div>
+
+    <input type="hidden" id="logo_url" value="{{ business.logo_url }}">
+
+    <button class="save-btn" id="saveBtn" onclick="saveSettings()">
+      <span class="spinner"></span>
+      <span class="btn-label">💾 حفظ التعديلات</span>
+    </button>
+
+    <p id="msg"></p>
+
+    <div class="footer-row">
+      <a href="/admin" class="back-link">→ العودة للوحة التحكم</a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+function onSlugInput(){
+  let input = document.getElementById("slug");
+  let cleaned = input.value.toLowerCase().replace(/\s+/g,'-');
+  if(cleaned !== input.value) input.value = cleaned;
+  document.getElementById("previewSlug").textContent = "waqti.app/" + (input.value || "your-slug");
+}
+
+function onLogoChange(){
+  let file = document.getElementById("logo_file").files[0];
+  if(!file) return;
+  let url = URL.createObjectURL(file);
+  document.getElementById("previewLogo").src = url;
+  document.getElementById("logoPreviewSm").src = url;
+  document.getElementById("fileLabel").textContent = "✓ " + file.name;
+  document.getElementById("logo_url").value = "";
+}
+
+function setLoading(v){
+  let btn = document.getElementById("saveBtn");
+  btn.disabled = v;
+  btn.classList.toggle("loading", v);
+}
+
+async function saveSettings(){
+  let name     = document.getElementById("name").value.trim();
+  let whatsapp = document.getElementById("whatsapp").value.trim();
+  let slug     = document.getElementById("slug").value.trim();
+  let currency = document.getElementById("currency").value;
+  let logoUrl  = document.getElementById("logo_url").value;
+  let msg      = document.getElementById("msg");
+
+  msg.textContent = "";
+  msg.className = "";
+
+  if(!name || !whatsapp || !slug || !currency){
+    msg.className = "error";
+    msg.textContent = "يرجى ملء جميع الحقول واختيار العملة";
+    return;
+  }
+
+  setLoading(true);
+
+  try{
+    // رفع الشعار لو في ملف جديد
+    let fileInput = document.getElementById("logo_file");
+    if(fileInput.files.length > 0){
+      let formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      let uploadRes = await fetch("/upload-logo", {method:"POST", body:formData});
+      let uploadData = await uploadRes.json();
+      logoUrl = uploadData.logo_url;
+    }
+
+    let res = await fetch("/business-settings",{
+      method:"PUT",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name, whatsapp, slug, currency, logo_url: logoUrl})
+    });
+
+    let data = await res.json();
+
+    if(res.ok){
+      msg.className = "success";
+      msg.textContent = "✅ تم حفظ التعديلات بنجاح";
+      document.getElementById("logo_url").value = logoUrl;
+    } else {
+      msg.className = "error";
+      msg.textContent = "❌ " + data.message;
+    }
+  } catch(e){
+    msg.className = "error";
+    msg.textContent = "❌ تعذر الاتصال بالخادم";
+  } finally {
+    setLoading(false);
+  }
+}
+</script>
+</body>
+</html>

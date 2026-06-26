@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الإحصائيات - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --bad-tint:#fef2f2;
+  --amber:#d97706;
+  --amber-tint:#fffbeb;
+  --purple:#7c3aed;
+  --purple-tint:#f3eafe;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;font-family:'Cairo',sans-serif;
+  background:var(--paper);color:var(--ink);
+  padding:32px 18px 60px;
+}
+
+.container{max-width:1100px;margin:auto;}
+
+.header{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:26px 32px;border-radius:var(--radius-lg);
+  color:white;display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:20px;
+  flex-wrap:wrap;gap:14px;position:relative;overflow:hidden;
+}
+.header::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(400px 200px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+.header-title{font-size:24px;font-weight:900;position:relative;z-index:1;}
+.header-sub{color:#a7f3d0;font-size:13px;font-weight:600;margin-top:4px;position:relative;z-index:1;}
+.header-actions{display:flex;gap:10px;position:relative;z-index:1;}
+.btn-pill{
+  padding:10px 18px;border-radius:12px;text-decoration:none;
+  font-weight:700;font-size:14px;white-space:nowrap;
+  transition:transform .12s;display:inline-block;
+}
+.btn-pill:hover{transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#f4ece4;}
+.btn-danger{background:var(--bad);color:white;}
+
+/* Stats grid */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:14px;margin-bottom:22px;
+}
+
+.stat-card{
+  background:var(--card);border:1px solid var(--line);
+  padding:22px 18px;border-radius:var(--radius-lg);
+  text-align:center;transition:transform .2s, box-shadow .2s;
+}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.08);}
+.stat-icon{font-size:30px;margin-bottom:8px;}
+.stat-number{font-size:34px;font-weight:900;}
+.stat-label{color:var(--ink-soft);font-size:13px;font-weight:600;margin-top:5px;}
+
+/* Cards */
+.card{
+  background:var(--card);border:1px solid var(--line);
+  padding:24px;border-radius:var(--radius-lg);margin-bottom:20px;
+}
+.card-title{font-size:19px;font-weight:800;margin-bottom:20px;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+/* Chart */
+.chart{
+  display:flex;align-items:flex-end;gap:10px;
+  height:180px;padding:10px 0;
+}
+.bar-wrap{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;gap:6px;height:100%;justify-content:flex-end;
+}
+.bar{
+  width:100%;border-radius:8px 8px 0 0;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  transition:height 1s ease;min-height:4px;
+}
+.bar-label{font-size:11.5px;color:var(--ink-soft);font-weight:700;}
+.bar-count{font-size:13px;font-weight:900;color:var(--green-dark);}
+
+/* Top service */
+.top-service{
+  display:flex;align-items:center;gap:16px;
+  background:var(--green-tint);
+  border:1px solid rgba(27,200,74,.2);
+  padding:18px;border-radius:var(--radius-md);
+}
+.top-service-icon{font-size:40px;}
+.top-service-name{font-size:18px;font-weight:900;color:var(--green-dark);}
+.top-service-count{color:var(--ink-soft);font-size:13px;font-weight:600;margin-top:4px;}
+
+/* Status bars */
+.status-bars{display:flex;flex-direction:column;gap:14px;}
+.status-bar-item{display:flex;align-items:center;gap:12px;}
+.status-bar-label{min-width:110px;font-weight:700;font-size:14px;}
+.status-bar-track{
+  flex:1;background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:999px;height:16px;overflow:hidden;
+}
+.status-bar-fill{height:100%;border-radius:999px;transition:width 1s ease;}
+.status-bar-count{min-width:30px;font-weight:900;font-size:14px;}
+
+.empty-note{
+  text-align:center;color:var(--ink-soft);
+  padding:30px;font-size:14px;
+}
+
+@media(max-width:760px){
+  .two-col{grid-template-columns:1fr;}
+  body{padding:16px 12px 40px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div>
+      <div class="header-title">📊 الإحصائيات</div>
+      <div class="header-sub">{{ business.name }}</div>
+    </div>
+    <div class="header-actions">
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+    </div>
+  </div>
+
+  <!-- الأرقام الرئيسية -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-number" id="s-total" style="color:var(--green)">-</div>
+      <div class="stat-label">إجمالي الحجوزات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🆕</div>
+      <div class="stat-number" id="s-today" style="color:var(--accent)">-</div>
+      <div class="stat-label">حجوزات اليوم</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-number" id="s-completed" style="color:var(--green-dark)">-</div>
+      <div class="stat-label">مكتملة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔴</div>
+      <div class="stat-number" id="s-cancelled" style="color:var(--bad)">-</div>
+      <div class="stat-label">ملغية</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✂️</div>
+      <div class="stat-number" id="s-services" style="color:var(--amber)">-</div>
+      <div class="stat-label">عدد الخدمات</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">👁️</div>
+      <div class="stat-number" id="s-visits" style="color:var(--purple)">-</div>
+      <div class="stat-label">الزيارات</div>
+    </div>
+  </div>
+
+  <!-- رسم بياني -->
+  <div class="card">
+    <div class="card-title">📈 حجوزات آخر 7 أيام</div>
+    <div class="chart" id="chart"></div>
+  </div>
+
+  <!-- صفين -->
+  <div class="two-col">
+
+    <!-- أكثر خدمة -->
+    <div class="card">
+      <div class="card-title">⭐ أكثر خدمة محجوزة</div>
+      <div id="top-service">
+        <div class="empty-note">جاري التحميل...</div>
+      </div>
+    </div>
+
+    <!-- توزيع الحالات -->
+    <div class="card">
+      <div class="card-title">📋 توزيع الحجوزات</div>
+      <div class="status-bars" id="status-bars"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+async function loadStats(){
+  let res  = await fetch("/stats-data");
+  let data = await res.json();
+
+  animateNum("s-total",     data.total);
+  animateNum("s-today",     data.today);
+  animateNum("s-completed", data.completed);
+  animateNum("s-cancelled", data.cancelled);
+  animateNum("s-services",  data.services_count);
+  animateNum("s-visits",    data.visits);
+
+  renderChart(data.last_7_days);
+  renderTopService(data.top_service);
+  renderStatusBars(data);
+}
+
+function animateNum(id, target){
+  let el = document.getElementById(id);
+  let start = 0, step = target / (1000/16);
+  let timer = setInterval(() => {
+    start += step;
+    if(start >= target){ start = target; clearInterval(timer); }
+    el.textContent = Math.floor(start);
+  }, 16);
+}
+
+function renderChart(days){
+  let chart = document.getElementById("chart");
+  let max = Math.max(...days.map(d => d.count), 1);
+  chart.innerHTML = days.map(d => `
+    <div class="bar-wrap">
+      <div class="bar-count">${d.count}</div>
+      <div class="bar" style="height:${(d.count/max)*150}px"></div>
+      <div class="bar-label">${d.day}</div>
+    </div>
+  `).join("");
+}
+
+function renderTopService(top){
+  let el = document.getElementById("top-service");
+  if(!top){
+    el.innerHTML = `<div class="empty-note">لا يوجد حجوزات بعد</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="top-service">
+      <div class="top-service-icon">🏆</div>
+      <div>
+        <div class="top-service-name">${top.name}</div>
+        <div class="top-service-count">${top.count} حجز</div>
+      </div>
+    </div>`;
+}
+
+function renderStatusBars(data){
+  let el    = document.getElementById("status-bars");
+  let total = data.total || 1;
+
+  let statuses = [
+    {label:"🔵 مؤكد",   count:data.confirmed, color:"var(--accent)"},
+    {label:"🟢 مكتمل",  count:data.completed, color:"var(--green-dark)"},
+    {label:"🔴 ملغي",   count:data.cancelled, color:"var(--bad)"},
+  ];
+
+  el.innerHTML = statuses.map(s => `
+    <div class="status-bar-item">
+      <div class="status-bar-label">${s.label}</div>
+      <div class="status-bar-track">
+        <div class="status-bar-fill" style="width:${(s.count/total)*100}%;background:${s.color}"></div>
+      </div>
+      <div class="status-bar-count">${s.count}</div>
+    </div>
+  `).join("");
+}
+
+loadStats();
+</script>
+</body>
+</html>

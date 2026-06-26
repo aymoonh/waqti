@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تتبع حجزك - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --bad-tint:#fef2f2;
+  --amber:#d97706;
+  --amber-tint:#fffbeb;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+
+.wrap{width:480px;max-width:100%;}
+
+/* Store header */
+.store-header{text-align:center;margin-bottom:20px;}
+.store-logo{
+  width:70px;height:70px;border-radius:18px;
+  object-fit:contain;background:#fff;padding:7px;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+  margin-bottom:12px;
+}
+.store-name{color:#fff;font-size:18px;font-weight:800;}
+.store-cat{color:#a7f3d0;font-size:12.5px;font-weight:600;margin-top:3px;}
+
+/* Box */
+.box{
+  background:var(--card);
+  border-radius:var(--radius-lg);
+  padding:30px;
+  box-shadow:0 30px 70px rgba(0,0,0,.35);
+}
+
+/* Tracking code */
+.tracking-label{
+  text-align:center;
+  color:var(--ink-soft);font-size:13px;font-weight:600;
+  margin-bottom:4px;
+}
+.tracking-code{
+  text-align:center;
+  font-size:22px;font-weight:900;
+  letter-spacing:3px;color:var(--green-dark);
+  background:var(--green-tint);
+  border:1px solid rgba(27,200,74,.2);
+  border-radius:var(--radius-md);
+  padding:10px;margin-bottom:24px;
+}
+
+/* Progress */
+.progress{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:28px;position:relative;
+}
+.progress::before{
+  content:"";position:absolute;
+  top:18px;right:18px;left:18px;
+  height:3px;background:var(--line);z-index:0;
+}
+.progress-fill{
+  position:absolute;top:18px;right:18px;
+  height:3px;background:var(--green);
+  z-index:1;transition:width .5s ease;
+}
+
+.step{
+  display:flex;flex-direction:column;
+  align-items:center;gap:7px;position:relative;z-index:2;
+}
+.step-circle{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;border:3px solid var(--line);
+  background:var(--card);transition:all .3s;
+}
+.step.done .step-circle{border-color:var(--green);background:var(--green-tint);}
+.step.active .step-circle{
+  border-color:var(--green);background:var(--green);
+  color:white;box-shadow:0 0 0 4px var(--green-tint);
+}
+.step-label{font-size:11px;font-weight:700;color:var(--ink-soft);}
+.step.done .step-label,.step.active .step-label{color:var(--green-dark);}
+
+/* Status badge */
+.status-badge{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px;border-radius:999px;
+  font-size:14px;font-weight:800;
+  margin-bottom:22px;
+}
+
+/* Info grid */
+.info-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:20px;
+}
+.info-item{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:13px;
+}
+.info-item.full{grid-column:1/-1;}
+.info-label{font-size:11.5px;font-weight:600;color:var(--ink-soft);margin-bottom:4px;}
+.info-value{font-size:14px;font-weight:800;color:var(--ink);}
+
+/* Back button */
+.back-btn{
+  display:block;width:100%;padding:13px;
+  border:none;border-radius:var(--radius-md);
+  background:var(--green);color:white;
+  font-size:15px;font-weight:800;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  text-align:center;text-decoration:none;
+  transition:background .15s;
+}
+.back-btn:hover{background:var(--green-dark);}
+
+/* Footer */
+.footer{
+  text-align:center;margin-top:16px;
+  color:rgba(255,255,255,.35);font-size:12px;font-weight:600;
+}
+.footer a{color:rgba(255,255,255,.5);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="store-header">
+    {% if business and business.logo_url %}
+    <img class="store-logo" src="{{ business.logo_url }}" alt="{{ business.name }}">
+    {% endif %}
+    <div class="store-name">{{ business.name if business else "النشاط" }}</div>
+    <div class="store-cat">{{ business.category if business else "" }}</div>
+  </div>
+
+  <div class="box">
+
+    <div class="tracking-label">رقم تتبع حجزك</div>
+    <div class="tracking-code">{{ booking.tracking_code }}</div>
+
+    <!-- Progress Bar -->
+    {% set status = booking.status %}
+
+    {% if status == "مؤكد" %}
+      {% set progress = "33%" %}
+    {% elif status == "مكتمل" %}
+      {% set progress = "100%" %}
+    {% else %}
+      {% set progress = "0%" %}
+    {% endif %}
+
+    <div class="progress">
+      <div class="progress-fill" style="width:{{ progress }}"></div>
+
+      <div class="step done">
+        <div class="step-circle">✅</div>
+        <div class="step-label">تم الحجز</div>
+      </div>
+
+      <div class="step {% if status in ['مؤكد', 'مكتمل'] %}done{% endif %}">
+        <div class="step-circle">🔄</div>
+        <div class="step-label">مؤكد</div>
+      </div>
+
+      <div class="step {% if status == 'مكتمل' %}active{% endif %}">
+        <div class="step-circle">🎉</div>
+        <div class="step-label">مكتمل</div>
+      </div>
+
+    </div>
+
+    <!-- Status Badge -->
+    {% if status == "مؤكد" %}
+    <div class="status-badge" style="background:var(--green-tint);color:var(--green-dark);">
+      ✅ حجزك مؤكد — في انتظارك!
+    </div>
+    {% elif status == "مكتمل" %}
+    <div class="status-badge" style="background:var(--accent-tint);color:var(--accent);">
+      🎉 تم إكمال موعدك بنجاح!
+    </div>
+    {% elif status == "ملغي" %}
+    <div class="status-badge" style="background:var(--bad-tint);color:var(--bad);">
+      ❌ تم إلغاء هذا الحجز
+    </div>
+    {% endif %}
+
+    <!-- Details -->
+    <div class="info-grid">
+
+      <div class="info-item">
+        <div class="info-label">✂️ الخدمة</div>
+        <div class="info-value">{{ service.name if service else "—" }}</div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-label">⏱️ المدة</div>
+        <div class="info-value">{{ service.duration if service else "—" }} دقيقة</div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-label">📅 التاريخ</div>
+        <div class="info-value">{{ booking.date }}</div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-label">🕐 الوقت</div>
+        <div class="info-value">{{ booking.time }}</div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-label">👤 الاسم</div>
+        <div class="info-value">{{ booking.customer_name }}</div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-label">📱 الهاتف</div>
+        <div class="info-value">{{ booking.customer_phone }}</div>
+      </div>
+
+      {% if booking.created_at %}
+      <div class="info-item full">
+        <div class="info-label">🕐 وقت الحجز</div>
+        <div class="info-value">{{ booking.created_at.strftime("%Y-%m-%d %H:%M") }}</div>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <a href="/b/{{ business.slug }}" class="back-btn">← احجز موعداً جديداً</a>
+
+  </div>
+
+  <div class="footer">
+    مدعوم بـ <a href="#">waqti.app</a>
+  </div>
+
+</div>
+
+</body>
+</html>

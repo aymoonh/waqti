@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ business.name }} - احجز موعدك</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --bad-tint:#fef2f2;
+  --whatsapp:#25D366;
+  --whatsapp-dark:#1da851;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+}
+
+/* Navbar */
+.navbar{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:16px 24px;
+  display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:50;
+}
+
+.nav-logo{
+  width:44px;height:44px;border-radius:12px;
+  background:#fff;padding:5px;object-fit:contain;flex:none;
+}
+
+.nav-name{color:#fff;font-size:19px;font-weight:900;}
+.nav-cat{color:#a7f3d0;font-size:12px;font-weight:600;}
+
+.nav-tag{
+  margin-right:auto;
+  background:rgba(27,200,74,.2);
+  border:1px solid rgba(27,200,74,.3);
+  color:#a7f3d0;
+  padding:5px 14px;border-radius:999px;
+  font-size:12.5px;font-weight:700;
+}
+
+.container{max-width:860px;margin:auto;padding:28px 18px 60px;}
+
+/* Hero */
+.hero{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  border-radius:var(--radius-lg);
+  padding:44px 28px;
+  text-align:center;
+  color:white;
+  margin-bottom:28px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(500px 250px at 50% -30%, rgba(27,200,74,.25), transparent 70%);
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:1;}
+.hero h1{font-size:28px;font-weight:900;margin-bottom:8px;}
+.hero p{color:#a7f3d0;font-size:15px;font-weight:600;}
+
+/* Steps */
+.steps{
+  display:flex;align-items:center;
+  justify-content:center;gap:0;
+  margin-bottom:24px;
+}
+.step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.step-circle{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;
+}
+.step-circle.active{background:var(--green);color:white;}
+.step-circle.done{background:var(--green-tint);color:var(--green-dark);}
+.step-circle.pending{background:var(--line);color:var(--ink-soft);}
+.step-label{font-size:12px;font-weight:700;color:var(--ink-soft);}
+.step-label.active{color:var(--green-dark);}
+.step-line{width:40px;height:2px;background:var(--line);margin:0 4px;margin-bottom:22px;}
+.step-line.done{background:var(--green);}
+
+/* Cards */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:24px;
+  margin-bottom:16px;
+}
+.card-title{font-size:18px;font-weight:800;margin-bottom:16px;}
+
+/* Services */
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;
+}
+
+.service-card{
+  border:2px solid var(--line);
+  border-radius:var(--radius-md);
+  padding:16px;cursor:pointer;
+  transition:border-color .15s, background .15s;
+  background:#fffdfb;
+}
+.service-card:hover{border-color:var(--green);}
+.service-card.selected{border-color:var(--green);background:var(--green-tint);}
+
+.service-name{font-size:15px;font-weight:800;margin-bottom:6px;}
+.service-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.service-badge{
+  font-size:12px;font-weight:700;
+  background:var(--paper);border:1px solid var(--line);
+  padding:3px 10px;border-radius:999px;color:var(--ink-soft);
+}
+
+/* Date picker */
+.date-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+}
+
+.date-btn{
+  padding:10px 4px;border-radius:var(--radius-md);
+  border:1.5px solid var(--line);
+  background:#fffdfb;cursor:pointer;
+  text-align:center;transition:border-color .15s, background .15s;
+  font-family:'Cairo',sans-serif;
+}
+.date-btn:hover{border-color:var(--green);}
+.date-btn.selected{border-color:var(--green);background:var(--green-tint);}
+.date-btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none;}
+.date-day{font-size:11px;font-weight:700;color:var(--ink-soft);}
+.date-num{font-size:16px;font-weight:900;margin-top:2px;}
+
+/* Time slots */
+.slots-grid{
+  display:flex;flex-wrap:wrap;gap:10px;
+}
+
+.slot-btn{
+  padding:10px 18px;border-radius:var(--radius-md);
+  border:1.5px solid var(--line);
+  background:#fffdfb;cursor:pointer;
+  font-size:15px;font-weight:700;
+  font-family:'Cairo',sans-serif;
+  transition:border-color .15s, background .15s;
+}
+.slot-btn:hover{border-color:var(--green);}
+.slot-btn.selected{border-color:var(--green);background:var(--green-tint);}
+
+.no-slots{
+  text-align:center;padding:20px;
+  color:var(--ink-soft);font-size:14px;font-weight:600;
+}
+
+/* Form */
+.form-field{margin-bottom:14px;}
+
+.field-label{
+  display:block;font-weight:700;
+  font-size:14px;color:var(--ink);margin-bottom:6px;
+}
+
+input{
+  width:100%;padding:13px 16px;
+  font-size:15px;border-radius:var(--radius-md);
+  border:1.5px solid var(--line);outline:none;
+  font-family:'Cairo',sans-serif;
+  background:#fffdfb;color:var(--ink);
+  transition:border-color .15s, box-shadow .15s;
+  box-sizing:border-box;
+}
+input::placeholder{color:#b9b0a7;}
+input:focus{border-color:var(--green);box-shadow:0 0 0 4px var(--green-tint);}
+
+/* Summary */
+.summary-box{
+  background:var(--green-tint);
+  border:1px solid rgba(27,200,74,.3);
+  border-radius:var(--radius-md);
+  padding:16px;margin-bottom:16px;
+  font-size:14px;font-weight:600;line-height:1.9;
+}
+
+/* Buttons */
+.book-btn{
+  width:100%;padding:16px;border:none;
+  border-radius:var(--radius-md);
+  background:var(--whatsapp);color:white;
+  font-size:16px;font-weight:800;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:background .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.book-btn:hover{background:var(--whatsapp-dark);}
+.book-btn:disabled{opacity:.6;cursor:not-allowed;}
+
+.next-btn{
+  width:100%;padding:14px;border:none;
+  border-radius:var(--radius-md);
+  background:var(--green);color:white;
+  font-size:15px;font-weight:800;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:background .15s;margin-top:8px;
+}
+.next-btn:hover{background:var(--green-dark);}
+
+.section{display:none;}
+.section.active{display:block;}
+
+/* Success */
+.success-box{
+  text-align:center;padding:40px 20px;
+}
+.success-icon{font-size:60px;margin-bottom:16px;}
+.success-title{font-size:22px;font-weight:900;color:var(--green-dark);margin-bottom:8px;}
+.success-sub{color:var(--ink-soft);font-size:14px;font-weight:600;margin-bottom:20px;}
+.tracking-code{
+  display:inline-block;
+  background:var(--green-tint);
+  border:1px solid rgba(27,200,74,.3);
+  padding:10px 24px;border-radius:999px;
+  font-size:18px;font-weight:900;
+  color:var(--green-dark);
+  letter-spacing:2px;margin-bottom:20px;
+}
+
+@media(max-width:540px){
+  .date-grid{grid-template-columns:repeat(4,1fr);}
+  .services-grid{grid-template-columns:1fr;}
+  .hero{padding:32px 18px;}
+  .hero h1{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <img class="nav-logo" src="{{ business.logo_url or '/uploads/Waqti_logo.png' }}" alt="">
+  <div>
+    <div class="nav-name">{{ business.name }}</div>
+    <div class="nav-cat">{{ business.category }}</div>
+  </div>
+  <span class="nav-tag">✨ احجز موعدك</span>
+</nav>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-content">
+      <h1>احجز موعدك بخطوات بسيطة</h1>
+      <p>اختر الخدمة والوقت المناسب وأكّد حجزك عبر واتساب</p>
+    </div>
+  </div>
+
+  <!-- Steps indicator -->
+  <div class="steps">
+    <div class="step">
+      <div class="step-circle active" id="step1-circle">1</div>
+      <div class="step-label active" id="step1-label">الخدمة</div>
+    </div>
+    <div class="step-line" id="line1"></div>
+    <div class="step">
+      <div class="step-circle pending" id="step2-circle">2</div>
+      <div class="step-label" id="step2-label">الموعد</div>
+    </div>
+    <div class="step-line" id="line2"></div>
+    <div class="step">
+      <div class="step-circle pending" id="step3-circle">3</div>
+      <div class="step-label" id="step3-label">بياناتك</div>
+    </div>
+  </div>
+
+  <!-- Step 1: اختيار الخدمة -->
+  <div class="section active" id="section1">
+    <div class="card">
+      <div class="card-title">✂️ اختر الخدمة</div>
+      <div class="services-grid">
+        {% for s in services %}
+        <div class="service-card" onclick="selectService({{ s.id }}, '{{ s.name }}', {{ s.duration }}, {{ s.price }})" id="svc-{{ s.id }}">
+          <div class="service-name">{{ s.name }}</div>
+          <div class="service-meta">
+            <span class="service-badge">⏱️ {{ s.duration }} دقيقة</span>
+            {% if s.price > 0 %}
+            <span class="service-badge">💰 {{ s.price|int }} {{ business.currency }}</span>
+            {% endif %}
+          </div>
+        </div>
+        {% else %}
+        <div style="text-align:center;padding:30px;color:var(--ink-soft);">لا توجد خدمات متاحة حالياً</div>
+        {% endfor %}
+      </div>
+    </div>
+    <button class="next-btn" onclick="goToStep2()" id="next1-btn" style="display:none;">التالي — اختر الموعد ←</button>
+  </div>
+
+  <!-- Step 2: اختيار التاريخ والوقت -->
+  <div class="section" id="section2">
+    <div class="card">
+      <div class="card-title">📅 اختر التاريخ</div>
+      <div class="date-grid" id="date-grid"></div>
+    </div>
+    <div class="card" id="slots-card" style="display:none;">
+      <div class="card-title">🕐 الأوقات المتاحة</div>
+      <div class="slots-grid" id="slots-grid"></div>
+    </div>
+    <button class="next-btn" onclick="goToStep3()" id="next2-btn" style="display:none;">التالي — أدخل بياناتك ←</button>
+  </div>
+
+  <!-- Step 3: بيانات الزبون -->
+  <div class="section" id="section3">
+    <div class="card">
+      <div class="card-title">👤 بياناتك</div>
+
+      <div id="booking-summary" class="summary-box"></div>
+
+      <div class="form-field">
+        <label class="field-label" for="cust-name">اسمك الكامل</label>
+        <input id="cust-name" placeholder="أدخل اسمك">
+      </div>
+      <div class="form-field">
+        <label class="field-label" for="cust-phone">رقم هاتفك</label>
+        <input id="cust-phone" placeholder="‎+970 59 000 0000" inputmode="tel">
+      </div>
+
+      <button class="book-btn" onclick="confirmBooking()" id="bookBtn">
+        💬 تأكيد الحجز عبر واتساب
+      </button>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="section" id="section4">
+    <div class="card">
+      <div class="success-box">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">تم تأكيد حجزك!</div>
+        <div class="success-sub">رقم تتبع حجزك</div>
+        <div class="tracking-code" id="success-tracking"></div>
+        <div class="success-sub">سيتم التواصل معك قريباً عبر واتساب</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+const BUSINESS_ID = {{ business.id }};
+const WHATSAPP    = "{{ business.whatsapp }}".replace(/[^0-9]/g,'');
+const CURRENCY    = "{{ business.currency }}";
+
+let selectedService = null;
+let selectedDate    = null;
+let selectedTime    = null;
+
+// ===== Step 1: الخدمة =====
+
+function selectService(id, name, duration, price){
+  document.querySelectorAll(".service-card").forEach(c => c.classList.remove("selected"));
+  document.getElementById("svc-" + id).classList.add("selected");
+  selectedService = {id, name, duration, price};
+  document.getElementById("next1-btn").style.display = "block";
+}
+
+function goToStep2(){
+  if(!selectedService) return;
+  showSection(2);
+  buildDateGrid();
+}
+
+// ===== Step 2: التاريخ والوقت =====
+
+function buildDateGrid(){
+  let grid = document.getElementById("date-grid");
+  grid.innerHTML = "";
+
+  const dayNames = ["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
+  let today = new Date();
+
+  for(let i = 0; i < 14; i++){
+    let d = new Date(today);
+    d.setDate(today.getDate() + i);
+
+    let dateStr = d.toISOString().split("T")[0];
+    let dayName = dayNames[d.getDay()];
+    let dayNum  = d.getDate();
+
+    let btn = document.createElement("div");
+    btn.className = "date-btn";
+    btn.innerHTML = `<div class="date-day">${dayName}</div><div class="date-num">${dayNum}</div>`;
+    btn.onclick = () => selectDate(dateStr, btn);
+    grid.appendChild(btn);
+  }
+}
+
+async function selectDate(dateStr, btn){
+  document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  selectedDate = dateStr;
+  selectedTime = null;
+  document.getElementById("next2-btn").style.display = "none";
+
+  let slotsCard = document.getElementById("slots-card");
+  let slotsGrid = document.getElementById("slots-grid");
+  slotsCard.style.display = "block";
+  slotsGrid.innerHTML = `<div class="no-slots">⏳ جاري تحميل الأوقات...</div>`;
+
+  let res = await fetch(`/available-slots?business_id=${BUSINESS_ID}&date=${dateStr}&service_id=${selectedService.id}`);
+  let data = await res.json();
+
+  if(!data.slots || data.slots.length === 0){
+    slotsGrid.innerHTML = `<div class="no-slots">😔 لا توجد أوقات متاحة في هذا اليوم</div>`;
+    return;
+  }
+
+  slotsGrid.innerHTML = data.slots.map(slot => `
+    <div class="slot-btn" onclick="selectSlot('${slot}', this)">${slot}</div>
+  `).join("");
+}
+
+function selectSlot(time, btn){
+  document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  selectedTime = time;
+  document.getElementById("next2-btn").style.display = "block";
+}
+
+function goToStep3(){
+  if(!selectedDate || !selectedTime) return;
+  showSection(3);
+
+  let priceText = selectedService.price > 0
+    ? `\n💰 السعر: ${selectedService.price} ${CURRENCY}`
+    : "";
+
+  document.getElementById("booking-summary").innerHTML =
+    `✂️ الخدمة: ${selectedService.name}<br>` +
+    `⏱️ المدة: ${selectedService.duration} دقيقة<br>` +
+    `📅 التاريخ: ${selectedDate}<br>` +
+    `🕐 الوقت: ${selectedTime}` +
+    (selectedService.price > 0 ? `<br>💰 السعر: ${selectedService.price} ${CURRENCY}` : "");
+}
+
+// ===== Step 3: التأكيد =====
+
+async function confirmBooking(){
+  let name  = document.getElementById("cust-name").value.trim();
+  let phone = document.getElementById("cust-phone").value.trim();
+
+  if(!name || !phone){
+    alert("يرجى إدخال اسمك ورقم هاتفك");
+    return;
+  }
+
+  let btn = document.getElementById("bookBtn");
+  btn.disabled = true;
+  btn.textContent = "⏳ جاري الحجز...";
+
+  try{
+    let res = await fetch("/bookings",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        business_id:    BUSINESS_ID,
+        service_id:     selectedService.id,
+        customer_name:  name,
+        customer_phone: phone,
+        date:           selectedDate,
+        time:           selectedTime
+      })
+    });
+
+    let data = await res.json();
+
+    if(res.ok){
+      // رسالة واتساب
+      let priceText = selectedService.price > 0
+        ? `\n💰 السعر: ${selectedService.price} ${CURRENCY}`
+        : "";
+
+      let message =
+        `مرحباً، أريد تأكيد حجزي:\n\n` +
+        `✂️ الخدمة: ${selectedService.name}\n` +
+        `📅 التاريخ: ${selectedDate}\n` +
+        `🕐 الوقت: ${selectedTime}` +
+        priceText +
+        `\n👤 الاسم: ${name}\n` +
+        `📱 الهاتف: ${phone}\n` +
+        `🔖 رقم الحجز: ${data.tracking_code}`;
+
+      window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(message), "_blank");
+
+      document.getElementById("success-tracking").textContent = data.tracking_code;
+      showSection(4);
+
+    } else {
+      alert("❌ " + data.message);
+      btn.disabled = false;
+      btn.textContent = "💬 تأكيد الحجز عبر واتساب";
+    }
+
+  } catch(e){
+    alert("❌ تعذر الاتصال بالخادم");
+    btn.disabled = false;
+    btn.textContent = "💬 تأكيد الحجز عبر واتساب";
+  }
+}
+
+// ===== Helpers =====
+
+function showSection(n){
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById("section" + n).classList.add("active");
+  updateSteps(n);
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function updateSteps(n){
+  for(let i = 1; i <= 3; i++){
+    let circle = document.getElementById("step" + i + "-circle");
+    let label  = document.getElementById("step" + i + "-label");
+    if(i < n){
+      circle.className = "step-circle done";
+      circle.textContent = "✓";
+    } else if(i === n){
+      circle.className = "step-circle active";
+      circle.textContent = i;
+      label.className = "step-label active";
+    } else {
+      circle.className = "step-circle pending";
+      circle.textContent = i;
+      label.className = "step-label";
+    }
+  }
+  if(n > 1) document.getElementById("line1").classList.add("done");
+  if(n > 2) document.getElementById("line2").classList.add("done");
+}
+</script>
+</body>
+</html>

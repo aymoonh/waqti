@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ترقية الخطة - وقتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#161313;
+  --ink-soft:#6b6360;
+  --paper:#f0fdf4;
+  --card:#ffffff;
+  --line:#e9e2d8;
+  --green:#1bc84a;
+  --green-dark:#15a83d;
+  --green-tint:#dcfce7;
+  --accent:#0ea5e9;
+  --accent-dark:#0284c7;
+  --accent-tint:#f0f9ff;
+  --bad:#dc2626;
+  --amber:#d97706;
+  --amber-tint:#fffbeb;
+  --radius-lg:22px;
+  --radius-md:14px;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;font-family:'Cairo',sans-serif;
+  background:var(--paper);color:var(--ink);
+  padding:32px 18px 60px;
+}
+
+.container{max-width:860px;margin:auto;}
+
+.header{
+  background:linear-gradient(135deg,#0a2818,#0c3d52);
+  padding:26px 32px;border-radius:var(--radius-lg);
+  color:white;display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:28px;
+  flex-wrap:wrap;gap:14px;position:relative;overflow:hidden;
+}
+.header::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(400px 200px at 90% -20%, rgba(27,200,74,.2), transparent 70%);
+  pointer-events:none;
+}
+.header-title{font-size:24px;font-weight:900;position:relative;z-index:1;}
+.header-sub{color:#a7f3d0;font-size:13px;font-weight:600;margin-top:4px;position:relative;z-index:1;}
+.header-actions{display:flex;gap:10px;position:relative;z-index:1;}
+.btn-pill{
+  padding:10px 18px;border-radius:12px;text-decoration:none;
+  font-weight:700;font-size:14px;white-space:nowrap;
+  transition:transform .12s;display:inline-block;
+}
+.btn-pill:hover{transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#f4ece4;}
+.btn-danger{background:var(--bad);color:white;}
+
+/* Pending banner */
+.pending-banner{
+  background:rgba(251,191,36,.12);
+  border:1px solid rgba(251,191,36,.35);
+  border-radius:var(--radius-md);
+  padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;margin-bottom:20px;
+}
+.pending-text{font-size:14px;font-weight:700;color:#d97706;}
+.cancel-plan-btn{
+  background:rgba(220,38,38,.15);color:var(--bad);
+  border:1px solid rgba(220,38,38,.3);
+  padding:7px 16px;border-radius:10px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'Cairo',sans-serif;
+}
+
+/* Plans grid */
+.plans-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+  margin-bottom:28px;
+}
+
+.plan-card{
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:28px 24px;
+  position:relative;
+  transition:border-color .2s, transform .2s;
+}
+
+.plan-card:hover{transform:translateY(-4px);}
+
+.plan-card.current{
+  border-color:var(--green);
+  background:var(--green-tint);
+}
+
+.plan-card.popular{
+  border-color:var(--accent);
+}
+
+.popular-badge{
+  position:absolute;top:-12px;right:20px;
+  background:var(--accent);color:white;
+  padding:4px 14px;border-radius:999px;
+  font-size:12px;font-weight:800;
+}
+
+.plan-name{font-size:20px;font-weight:900;margin-bottom:6px;}
+.plan-price{
+  font-size:38px;font-weight:900;
+  color:var(--green-dark);margin:12px 0 4px;
+}
+.plan-price span{font-size:16px;color:var(--ink-soft);font-weight:600;}
+.plan-desc{color:var(--ink-soft);font-size:13.5px;font-weight:600;margin-bottom:20px;}
+
+.plan-features{
+  list-style:none;padding:0;margin:0 0 24px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.plan-features li{
+  display:flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:600;
+}
+.plan-features li::before{content:"✅";font-size:14px;}
+.plan-features li.no::before{content:"❌";}
+
+.select-btn{
+  width:100%;padding:13px;border:none;
+  border-radius:var(--radius-md);
+  font-size:15px;font-weight:800;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:background .15s, transform .1s;
+}
+.select-btn:active{transform:scale(.99);}
+.select-btn.green{background:var(--green);color:white;}
+.select-btn.green:hover{background:var(--green-dark);}
+.select-btn.blue{background:var(--accent);color:white;}
+.select-btn.blue:hover{background:var(--accent-dark);}
+.select-btn.disabled{background:var(--line);color:var(--ink-soft);cursor:not-allowed;}
+
+/* Payment info */
+.payment-card{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-lg);padding:24px 28px;
+}
+.payment-title{font-size:18px;font-weight:800;margin-bottom:16px;}
+.payment-methods{display:flex;flex-direction:column;gap:12px;}
+.method{
+  display:flex;align-items:center;gap:12px;
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:14px 16px;
+  font-size:14.5px;font-weight:700;
+}
+.method-icon{font-size:24px;}
+
+#msg{
+  text-align:center;margin-top:16px;
+  font-size:14px;font-weight:700;min-height:18px;
+}
+#msg.success{color:var(--green-dark);}
+#msg.error{color:var(--bad);}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div>
+      <div class="header-title">🚀 ترقية الخطة</div>
+      <div class="header-sub">{{ business.name }}</div>
+    </div>
+    <div class="header-actions">
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+    </div>
+  </div>
+
+  {% if plan in ("pending_monthly", "pending_yearly") %}
+  <div class="pending-banner">
+    <span class="pending-text">⏳ طلب الترقية قيد المراجعة — سيتم التفعيل بعد تأكيد الدفع</span>
+    <button class="cancel-plan-btn" onclick="cancelPlan()">✕ إلغاء الطلب</button>
+  </div>
+  {% endif %}
+
+  <div class="plans-grid">
+
+    <!-- مجاني -->
+    <div class="plan-card {% if plan == 'free' %}current{% endif %}">
+      <div class="plan-name">🆓 المجاني</div>
+      <div class="plan-price">0<span> / دائماً</span></div>
+      <div class="plan-desc">للبدء واكتشاف المنصة</div>
+      <ul class="plan-features">
+        <li>20 حجز شهرياً</li>
+        <li>3 خدمات</li>
+        <li>صفحة حجز عامة</li>
+        <li class="no">إحصائيات متقدمة</li>
+        <li class="no">دعم أولوية</li>
+      </ul>
+      <button class="select-btn disabled" disabled>
+        {% if plan == 'free' %}✅ خطتك الحالية{% else %}الخطة المجانية{% endif %}
+      </button>
+    </div>
+
+    <!-- شهري -->
+    <div class="plan-card {% if plan == 'monthly' %}current{% endif %}">
+      <div class="plan-name">⭐ الشهري</div>
+      <div class="plan-price">9<span> $ / شهر</span></div>
+      <div class="plan-desc">للنشاطات النشطة</div>
+      <ul class="plan-features">
+        <li>حجوزات غير محدودة</li>
+        <li>خدمات غير محدودة</li>
+        <li>صفحة حجز عامة</li>
+        <li>إحصائيات متقدمة</li>
+        <li>دعم أولوية</li>
+      </ul>
+      {% if plan == 'monthly' %}
+      <button class="select-btn disabled" disabled>✅ خطتك الحالية</button>
+      {% elif plan == 'pending_monthly' %}
+      <button class="select-btn disabled" disabled>⏳ قيد المراجعة</button>
+      {% else %}
+      <button class="select-btn green" onclick="selectPlan('pending_monthly')">اختر الشهري</button>
+      {% endif %}
+    </div>
+
+    <!-- سنوي -->
+    <div class="plan-card {% if plan == 'yearly' %}current{% endif %} popular">
+      <div class="popular-badge">🔥 الأوفر</div>
+      <div class="plan-name">💎 السنوي</div>
+      <div class="plan-price">79<span> $ / سنة</span></div>
+      <div class="plan-desc">وفّر 29$ مقارنةً بالشهري</div>
+      <ul class="plan-features">
+        <li>حجوزات غير محدودة</li>
+        <li>خدمات غير محدودة</li>
+        <li>صفحة حجز عامة</li>
+        <li>إحصائيات متقدمة</li>
+        <li>دعم أولوية</li>
+      </ul>
+      {% if plan == 'yearly' %}
+      <button class="select-btn disabled" disabled>✅ خطتك الحالية</button>
+      {% elif plan == 'pending_yearly' %}
+      <button class="select-btn disabled" disabled>⏳ قيد المراجعة</button>
+      {% else %}
+      <button class="select-btn blue" onclick="selectPlan('pending_yearly')">اختر السنوي</button>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- طريقة الدفع -->
+  <div class="payment-card">
+    <div class="payment-title">💳 طريقة الدفع</div>
+    <div class="payment-methods">
+      <div class="method">
+        <span class="method-icon">📱</span>
+        <div>
+          <div>تحويل واتساب</div>
+          <div style="color:var(--ink-soft);font-size:13px;font-weight:600;">تواصل معنا على واتساب وأرسل إيصال الدفع</div>
+        </div>
+      </div>
+      <div class="method">
+        <span class="method-icon">🏦</span>
+        <div>
+          <div>تحويل بنكي</div>
+          <div style="color:var(--ink-soft);font-size:13px;font-weight:600;">سيتم إرسال تفاصيل الحساب بعد اختيار الخطة</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p id="msg"></p>
+
+</div>
+
+<script>
+
+async function selectPlan(plan){
+  let msg = document.getElementById("msg");
+  msg.textContent = "";
+  msg.className = "";
+
+  let res  = await fetch("/select-plan",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({plan})
+  });
+  let data = await res.json();
+
+  if(res.ok){
+    msg.className = "success";
+    msg.textContent = "✅ " + data.message;
+    setTimeout(() => location.reload(), 1500);
+  } else {
+    msg.className = "error";
+    msg.textContent = "❌ " + data.message;
+  }
+}
+
+async function cancelPlan(){
+  if(!confirm("هل تريد إلغاء طلب الترقية والبقاء على الخطة المجانية؟")) return;
+  await fetch("/cancel-plan", {method:"POST"});
+  location.reload();
+}
+
+</script>
+</body>
+</html>
