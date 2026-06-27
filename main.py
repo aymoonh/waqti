@@ -12,11 +12,19 @@ from datetime import datetime
 from dotenv import load_dotenv
 from database import SessionLocal, engine, get_db
 from models import Base, User, Business, Service, WorkingHours, Booking, PLAN_LIMITS, PAID_PLANS
+import cloudinary
+import cloudinary.uploader
 import os
 import uuid
 import re
 
 load_dotenv()
+
+cloudinary.config(
+    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key    = os.getenv("CLOUDINARY_API_KEY"),
+    api_secret = os.getenv("CLOUDINARY_API_SECRET")
+)
 
 # إنشاء الجداول
 Base.metadata.create_all(bind=engine)
@@ -258,14 +266,13 @@ def create_business(data: BusinessCreate, request: Request, db: Session = Depend
 
 @app.post("/upload-logo")
 async def upload_logo(file: UploadFile = File(...)):
-    import shutil
-    os.makedirs("uploads", exist_ok=True)
-    ext      = file.filename.split(".")[-1]
-    filename = f"{uuid.uuid4().hex}.{ext}"
-    path     = f"uploads/{filename}"
-    with open(path, "wb") as f:
-        shutil.copyfileobj(file.file, f)
-    return {"logo_url": f"/uploads/{filename}"}
+    contents = await file.read()
+    result = cloudinary.uploader.upload(
+        contents,
+        folder="waqti",
+        resource_type="image"
+    )
+    return {"logo_url": result["secure_url"]}
 
 
 # ========== Services ==========
