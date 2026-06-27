@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from models import Base
 import os
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./waqti.db")
@@ -18,6 +19,7 @@ def get_db():
     finally:
         db.close()
 
-# إنشاء الجداول تلقائياً
-from models import Base
+
 Base.metadata.create_all(bind=engine)
+
+
