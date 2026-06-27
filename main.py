@@ -116,28 +116,28 @@ class SelectPlan(BaseModel):
 
 @app.get("/")
 def root():
-    return RedirectResponse(url="/waqti/login")
+    return RedirectResponse(url="/login")
 
 
 # ========== Auth Pages ==========
 
-@app.get("/waqti/login", response_class=HTMLResponse)
+@app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
     return templates.TemplateResponse(request=request, name="login.html", context={})
 
-@app.get("/waqti/register", response_class=HTMLResponse)
+@app.get("/register", response_class=HTMLResponse)
 def register_page(request: Request):
     return templates.TemplateResponse(request=request, name="register.html", context={})
 
-@app.get("/waqti/logout")
+@app.get("/logout")
 def logout(request: Request):
     request.session.clear()
-    return RedirectResponse(url="/waqti/login", status_code=303)
+    return RedirectResponse(url="/login", status_code=303)
 
 
 # ========== Auth API ==========
 
-@app.post("/waqti/register")
+@app.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
         return JSONResponse(status_code=400, content={"message": "اسم المستخدم مستخدم مسبقاً"})
@@ -149,7 +149,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "User Created"}
 
-@app.post("/waqti/login")
+@app.post("/login")
 def login(data: LoginRequest, request: Request, db: Session = Depends(get_db)):
     if not data.password or len(data.password) > 128:
         return {"message": "Invalid login"}
@@ -162,14 +162,14 @@ def login(data: LoginRequest, request: Request, db: Session = Depends(get_db)):
 
 # ========== Dashboard ==========
 
-@app.get("/waqti/admin", response_class=HTMLResponse)
+@app.get("/admin", response_class=HTMLResponse)
 def admin(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     business = db.query(Business).filter(Business.user_id == user.id).first()
     if not business:
-        return RedirectResponse(url="/waqti/create-business", status_code=303)
+        return RedirectResponse(url="/create-business", status_code=303)
     plan        = business.plan or "free"
     max_bookings = PLAN_LIMITS.get(plan, PLAN_LIMITS["free"])["bookings"]
     max_services = PLAN_LIMITS.get(plan, PLAN_LIMITS["free"])["services"]
@@ -184,7 +184,7 @@ def admin(request: Request, db: Session = Depends(get_db)):
         }
     )
 
-@app.get("/waqti/admin-stats")
+@app.get("/admin-stats")
 def admin_stats(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -234,14 +234,14 @@ def admin_stats(request: Request, db: Session = Depends(get_db)):
 
 # ========== Create Business ==========
 
-@app.get("/waqti/create-business", response_class=HTMLResponse)
+@app.get("/create-business", response_class=HTMLResponse)
 def create_business_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     return templates.TemplateResponse(request=request, name="create_business.html", context={})
 
-@app.post("/waqti/create-business")
+@app.post("/create-business")
 def create_business(data: BusinessCreate, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -265,7 +265,7 @@ def create_business(data: BusinessCreate, request: Request, db: Session = Depend
     db.commit()
     return {"message": "تم إنشاء النشاط بنجاح"}
 
-@app.post("/waqti/upload-logo")
+@app.post("/upload-logo")
 async def upload_logo(file: UploadFile = File(...)):
     contents = await file.read()
     result = cloudinary.uploader.upload(
@@ -278,14 +278,14 @@ async def upload_logo(file: UploadFile = File(...)):
 
 # ========== Services ==========
 
-@app.get("/waqti/services", response_class=HTMLResponse)
+@app.get("/services", response_class=HTMLResponse)
 def services_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     business = db.query(Business).filter(Business.user_id == user.id).first()
     if not business:
-        return RedirectResponse(url="/waqti/create-business", status_code=303)
+        return RedirectResponse(url="/create-business", status_code=303)
     services = db.query(Service).filter(Service.business_id == business.id).all()
     plan         = business.plan or "free"
     max_services = PLAN_LIMITS.get(plan, PLAN_LIMITS["free"])["services"]
@@ -295,7 +295,7 @@ def services_page(request: Request, db: Session = Depends(get_db)):
         context={"business": business, "services": services, "max_services": max_services}
     )
 
-@app.post("/waqti/services")
+@app.post("/services")
 def create_service(data: ServiceCreate, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -327,7 +327,7 @@ def create_service(data: ServiceCreate, request: Request, db: Session = Depends(
     db.commit()
     return {"message": "تم إضافة الخدمة", "id": service.id}
 
-@app.put("/waqti/services/{service_id}")
+@app.put("/services/{service_id}")
 def update_service(service_id: int, data: ServiceUpdate, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -345,7 +345,7 @@ def update_service(service_id: int, data: ServiceUpdate, request: Request, db: S
     db.commit()
     return {"message": "تم التحديث"}
 
-@app.delete("/waqti/services/{service_id}")
+@app.delete("/services/{service_id}")
 def delete_service(service_id: int, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -364,21 +364,21 @@ def delete_service(service_id: int, request: Request, db: Session = Depends(get_
 
 # ========== Business Settings ==========
 
-@app.get("/waqti/business-settings", response_class=HTMLResponse)
+@app.get("/business-settings", response_class=HTMLResponse)
 def business_settings_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     business = db.query(Business).filter(Business.user_id == user.id).first()
     if not business:
-        return RedirectResponse(url="/waqti/create-business", status_code=303)
+        return RedirectResponse(url="/create-business", status_code=303)
     return templates.TemplateResponse(
         request=request,
         name="business_settings.html",
         context={"business": business}
     )
 
-@app.put("/waqti/business-settings")
+@app.put("/business-settings")
 def update_business_settings(data: BusinessUpdate, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -406,14 +406,14 @@ def update_business_settings(data: BusinessUpdate, request: Request, db: Session
 
 # ========== Working Hours ==========
 
-@app.get("/waqti/working-hours", response_class=HTMLResponse)
+@app.get("/working-hours", response_class=HTMLResponse)
 def working_hours_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     business = db.query(Business).filter(Business.user_id == user.id).first()
     if not business:
-        return RedirectResponse(url="/waqti/create-business", status_code=303)
+        return RedirectResponse(url="/create-business", status_code=303)
 
     hours = db.query(WorkingHours).filter(
         WorkingHours.business_id == business.id
@@ -442,7 +442,7 @@ def working_hours_page(request: Request, db: Session = Depends(get_db)):
         context={"business": business, "hours": hours}
     )
 
-@app.put("/waqti/working-hours")
+@app.put("/working-hours")
 def update_working_hours(data: WorkingHoursUpdate, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -465,7 +465,7 @@ def update_working_hours(data: WorkingHoursUpdate, request: Request, db: Session
 
 # ========== Public Booking Page ==========
 
-@app.get("/store/{slug}", response_class=HTMLResponse)
+@app.get("/book/{slug}", response_class=HTMLResponse)
 def booking_page(slug: str, request: Request, db: Session = Depends(get_db)):
     business = db.query(Business).filter(
         Business.slug == slug,
@@ -489,7 +489,7 @@ def booking_page(slug: str, request: Request, db: Session = Depends(get_db)):
         context={"business": business, "services": services, "hours": hours}
     )
 
-@app.get("/waqti/available-slots")
+@app.get("/available-slots")
 def get_available_slots(business_id: int, date: str, service_id: int, db: Session = Depends(get_db)):
     import datetime as dt
     try:
@@ -534,7 +534,7 @@ def get_available_slots(business_id: int, date: str, service_id: int, db: Sessio
 
     return {"slots": slots}
 
-@app.post("/waqti/bookings")
+@app.post("/bookings")
 def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
     business = db.query(Business).filter(
         Business.id == data.business_id,
@@ -583,21 +583,21 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
 
 # ========== Bookings Page ==========
 
-@app.get("/waqti/bookings", response_class=HTMLResponse)
+@app.get("/bookings", response_class=HTMLResponse)
 def bookings_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     business = db.query(Business).filter(Business.user_id == user.id).first()
     if not business:
-        return RedirectResponse(url="/waqti/create-business", status_code=303)
+        return RedirectResponse(url="/create-business", status_code=303)
     return templates.TemplateResponse(
         request=request,
         name="bookings.html",
         context={"business": business}
     )
 
-@app.get("/waqti/bookings-data")
+@app.get("/bookings-data")
 def get_bookings(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -633,7 +633,7 @@ def get_bookings(request: Request, db: Session = Depends(get_db)):
         ]
     }
 
-@app.put("/waqti/bookings/{booking_id}/status")
+@app.put("/bookings/{booking_id}/status")
 def update_booking_status(booking_id: int, data: StatusUpdate,
     request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
@@ -653,21 +653,21 @@ def update_booking_status(booking_id: int, data: StatusUpdate,
 
 # ========== Stats Page ==========
 
-@app.get("/waqti/stats", response_class=HTMLResponse)
+@app.get("/stats", response_class=HTMLResponse)
 def stats_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     business = db.query(Business).filter(Business.user_id == user.id).first()
     if not business:
-        return RedirectResponse(url="/waqti/create-business", status_code=303)
+        return RedirectResponse(url="/create-business", status_code=303)
     return templates.TemplateResponse(
         request=request,
         name="stats.html",
         context={"business": business}
     )
 
-@app.get("/waqti/stats-data")
+@app.get("/stats-data")
 def get_stats(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -718,21 +718,21 @@ def get_stats(request: Request, db: Session = Depends(get_db)):
 
 # ========== Upgrade Plan ==========
 
-@app.get("/waqti/upgrade", response_class=HTMLResponse)
+@app.get("/upgrade", response_class=HTMLResponse)
 def upgrade_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     business = db.query(Business).filter(Business.user_id == user.id).first()
     if not business:
-        return RedirectResponse(url="/waqti/create-business", status_code=303)
+        return RedirectResponse(url="/create-business", status_code=303)
     return templates.TemplateResponse(
         request=request,
         name="upgrade.html",
         context={"business": business, "plan": business.plan}
     )
 
-@app.post("/waqti/select-plan")
+@app.post("/select-plan")
 def select_plan(data: SelectPlan, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -744,7 +744,7 @@ def select_plan(data: SelectPlan, request: Request, db: Session = Depends(get_db
     db.commit()
     return {"message": "تم إرسال طلب الترقية — سيتم التفعيل بعد تأكيد الدفع"}
 
-@app.post("/waqti/cancel-plan")
+@app.post("/cancel-plan")
 def cancel_plan(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
@@ -762,13 +762,13 @@ def is_super_admin(request: Request, db: Session):
     user = get_current_user(request, db)
     return user and user.is_super_admin == 1
 
-@app.get("/waqti/superadmin", response_class=HTMLResponse)
+@app.get("/superadmin", response_class=HTMLResponse)
 def superadmin_page(request: Request, db: Session = Depends(get_db)):
     if not is_super_admin(request, db):
-        return RedirectResponse(url="/waqti/login", status_code=303)
+        return RedirectResponse(url="/login", status_code=303)
     return templates.TemplateResponse(request=request, name="superadmin.html", context={})
 
-@app.get("/waqti/superadmin-data")
+@app.get("/superadmin-data")
 def superadmin_data(request: Request, db: Session = Depends(get_db)):
     if not is_super_admin(request, db):
         return JSONResponse(status_code=403, content={"message": "غير مسموح"})
@@ -797,7 +797,7 @@ def superadmin_data(request: Request, db: Session = Depends(get_db)):
         ]
     }
 
-@app.put("/waqti/superadmin/toggle-active/{business_id}")
+@app.put("/superadmin/toggle-active/{business_id}")
 def toggle_active(business_id: int, request: Request, db: Session = Depends(get_db)):
     if not is_super_admin(request, db):
         return JSONResponse(status_code=403, content={"message": "غير مسموح"})
@@ -808,7 +808,7 @@ def toggle_active(business_id: int, request: Request, db: Session = Depends(get_
     db.commit()
     return {"is_active": business.is_active}
 
-@app.put("/waqti/superadmin/activate-plan/{business_id}")
+@app.put("/superadmin/activate-plan/{business_id}")
 def activate_plan(business_id: int, request: Request, db: Session = Depends(get_db)):
     if not is_super_admin(request, db):
         return JSONResponse(status_code=403, content={"message": "غير مسموح"})
@@ -822,7 +822,7 @@ def activate_plan(business_id: int, request: Request, db: Session = Depends(get_
     db.commit()
     return {"plan": business.plan}
 
-@app.delete("/waqti/superadmin/delete-business/{business_id}")
+@app.delete("/superadmin/delete-business/{business_id}")
 def delete_business(business_id: int, request: Request, db: Session = Depends(get_db)):
     if not is_super_admin(request, db):
         return JSONResponse(status_code=403, content={"message": "غير مسموح"})
@@ -837,7 +837,7 @@ def delete_business(business_id: int, request: Request, db: Session = Depends(ge
 
 # ========== Track Booking ==========
 
-@app.get("/waqti/track/{tracking_code}", response_class=HTMLResponse)
+@app.get("/track/{tracking_code}", response_class=HTMLResponse)
 def track_booking(tracking_code: str, request: Request, db: Session = Depends(get_db)):
     booking = db.query(Booking).filter(
         Booking.tracking_code == tracking_code

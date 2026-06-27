@@ -183,8 +183,8 @@ body{
       <div class="header-sub">{{ business.name }}</div>
     </div>
     <div class="header-actions">
-      <a href="/waqti/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
-      <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
     </div>
   </div>
 
@@ -264,7 +264,7 @@ async function saveHours(){
   setLoading(true);
 
   try{
-    let res = await fetch("/waqti/working-hours",{
+    let res = await fetch("/working-hours",{
       method:"PUT",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({hours})

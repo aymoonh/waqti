@@ -161,8 +161,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <div class="header-sub">إدارة منصة وقتي</div>
     </div>
     <div class="header-actions">
-      <a href="/waqti/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
-      <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
     </div>
   </div>
 
@@ -232,7 +232,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 let allBusinesses = [];
 
 async function loadData(){
-  let res = await fetch("/waqti/superadmin-data");
+  let res = await fetch("/superadmin-data");
   if(!res.ok){
     document.body.innerHTML = `<div style="text-align:center;padding:100px;color:#f87171;font-family:Cairo,sans-serif;font-size:20px">🚫 غير مسموح</div>`;
     return;
@@ -285,7 +285,7 @@ function renderBusinesses(businesses){
       <td>
         <div class="biz-name">${b.name}</div>
         <div class="biz-slug">
-          <a href="/store/${b.slug}" target="_blank">/store/${b.slug}</a>
+          <a href="/book/${b.slug}" target="_blank">/book/${b.slug}</a>
         </div>
       </td>
       <td style="color:var(--text-soft)">${b.owner}</td>
@@ -328,14 +328,14 @@ function filterBusinesses(){
 }
 
 async function toggleActive(id){
-  let res  = await fetch(`/waqti/superadmin/toggle-active/${id}`, {method:"PUT"});
+  let res  = await fetch(`/superadmin/toggle-active/${id}`, {method:"PUT"});
   let data = await res.json();
   let b = allBusinesses.find(x => x.id === id);
   if(b){ b.is_active = data.is_active; renderBusinesses(allBusinesses); }
 }
 
 async function activatePlan(id){
-  let res  = await fetch(`/waqti/superadmin/activate-plan/${id}`, {method:"PUT"});
+  let res  = await fetch(`/superadmin/activate-plan/${id}`, {method:"PUT"});
   let data = await res.json();
   let b = allBusinesses.find(x => x.id === id);
   if(b){
@@ -349,7 +349,7 @@ async function activatePlan(id){
 
 async function deleteBusiness(id, name){
   if(!confirm(`هل تريد حذف نشاط "${name}" نهائياً؟`)) return;
-  await fetch(`/waqti/superadmin/delete-business/${id}`, {method:"DELETE"});
+  await fetch(`/superadmin/delete-business/${id}`, {method:"DELETE"});
   allBusinesses = allBusinesses.filter(x => x.id !== id);
   document.getElementById("s-businesses").textContent = allBusinesses.length;
   renderBusinesses(allBusinesses);

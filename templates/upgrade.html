@@ -178,8 +178,8 @@ body{
       <div class="header-sub">{{ business.name }}</div>
     </div>
     <div class="header-actions">
-      <a href="/waqti/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
-      <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
     </div>
   </div>
 
@@ -286,7 +286,7 @@ async function selectPlan(plan){
   msg.textContent = "";
   msg.className = "";
 
-  let res  = await fetch("/waqti/select-plan",{
+  let res  = await fetch("/select-plan",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({plan})
@@ -305,7 +305,7 @@ async function selectPlan(plan){
 
 async function cancelPlan(){
   if(!confirm("هل تريد إلغاء طلب الترقية والبقاء على الخطة المجانية؟")) return;
-  await fetch("/waqti/cancel-plan", {method:"POST"});
+  await fetch("/cancel-plan", {method:"POST"});
   location.reload();
 }
 

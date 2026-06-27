@@ -238,8 +238,8 @@ select{
       <div class="header-sub">{{ business.name }}</div>
     </div>
     <div class="header-actions">
-      <a href="/waqti/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
-      <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
     </div>
   </div>
 
@@ -248,7 +248,7 @@ select{
     <img id="previewLogo" class="preview-logo" src="{{ business.logo_url or 'https://res.cloudinary.com/dsostxiei/image/upload/v1782521187/Waqti_Logo_ljaxhc.png' }}" alt="">
     <div class="preview-info">
       <div class="preview-name" id="previewName">{{ business.name }}</div>
-      <div class="preview-meta" id="previewSlug">talabo.app/store/{{ business.slug }}</div>
+      <div class="preview-meta" id="previewSlug">talabo.app/book/{{ business.slug }}</div>
     </div>
     <span class="preview-label">معاينة حية</span>
   </div>
@@ -270,7 +270,7 @@ select{
     <div class="field">
       <label class="field-label" for="slug">رابط صفحة الحجز</label>
       <div class="slug-wrap">
-        <span class="slug-prefix">talabo.app/store/</span>
+        <span class="slug-prefix">talabo.app/book/</span>
         <input id="slug" value="{{ business.slug }}" oninput="onSlugInput()">
       </div>
     </div>
@@ -317,7 +317,7 @@ select{
     <p id="msg"></p>
 
     <div class="footer-row">
-      <a href="/waqti/admin" class="back-link">→ العودة للوحة التحكم</a>
+      <a href="/admin" class="back-link">→ العودة للوحة التحكم</a>
     </div>
 
   </div>
@@ -330,7 +330,7 @@ function onSlugInput(){
   let input = document.getElementById("slug");
   let cleaned = input.value.toLowerCase().replace(/\s+/g,'-');
   if(cleaned !== input.value) input.value = cleaned;
-  document.getElementById("previewSlug").textContent = "talabo.app/store/" + (input.value || "your-slug");
+  document.getElementById("previewSlug").textContent = "talabo.app/book/" + (input.value || "your-slug");
 }
 
 function onLogoChange(){
@@ -374,12 +374,12 @@ async function saveSettings(){
     if(fileInput.files.length > 0){
       let formData = new FormData();
       formData.append("file", fileInput.files[0]);
-      let uploadRes = await fetch("/waqti/upload-logo", {method:"POST", body:formData});
+      let uploadRes = await fetch("/upload-logo", {method:"POST", body:formData});
       let uploadData = await uploadRes.json();
       logoUrl = uploadData.logo_url;
     }
 
-    let res = await fetch("/waqti/business-settings",{
+    let res = await fetch("/business-settings",{
       method:"PUT",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({name, whatsapp, slug, currency, logo_url: logoUrl})

@@ -220,8 +220,8 @@ input:focus{border-color:var(--green);box-shadow:0 0 0 4px var(--green-tint);}
       <div class="header-sub">{{ business.name }}</div>
     </div>
     <div class="header-actions">
-      <a href="/waqti/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
-      <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
     </div>
   </div>
 
@@ -306,7 +306,7 @@ async function addService(){
   if(!name){ msg.textContent = "أدخل اسم الخدمة"; return; }
   if(!duration || duration < 5){ msg.textContent = "المدة يجب أن تكون 5 دقائق على الأقل"; return; }
 
-  let res = await fetch("/waqti/services",{
+  let res = await fetch("/services",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({name, duration, price})
@@ -363,7 +363,7 @@ async function saveEdit(){
   let duration = parseInt(document.getElementById("edit-duration").value);
   let price    = parseFloat(document.getElementById("edit-price").value) || 0;
 
-  let res = await fetch("/waqti/services/" + editingId,{
+  let res = await fetch("/services/" + editingId,{
     method:"PUT",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({name, duration, price})
@@ -379,7 +379,7 @@ async function saveEdit(){
 
 async function deleteService(id){
   if(!confirm("هل تريد حذف هذه الخدمة؟")) return;
-  let res = await fetch("/waqti/services/" + id, {method:"DELETE"});
+  let res = await fetch("/services/" + id, {method:"DELETE"});
   if(res.ok){
     document.getElementById("svc-" + id).remove();
     let list = document.getElementById("services-list");

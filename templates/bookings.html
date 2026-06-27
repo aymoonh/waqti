@@ -167,8 +167,8 @@ body{
       <div class="header-sub">{{ business.name }}</div>
     </div>
     <div class="header-actions">
-      <a href="/waqti/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
-      <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
     </div>
   </div>
 
@@ -197,7 +197,7 @@ const STATUS_STYLES = {
 };
 
 async function loadBookings(){
-  let res  = await fetch("/waqti/bookings-data");
+  let res  = await fetch("/bookings-data");
   let data = await res.json();
   CURRENCY     = data.currency || "";
   allBookings  = data.bookings || [];
@@ -297,7 +297,7 @@ function renderBookings(bookings){
 }
 
 async function updateStatus(bookingId, status){
-  await fetch("/waqti/bookings/" + bookingId + "/status",{
+  await fetch("/bookings/" + bookingId + "/status",{
     method:"PUT",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({status})

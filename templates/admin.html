@@ -245,13 +245,13 @@ body{
         </div>
       </div>
       <div class="header-actions">
-        <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
+        <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
       </div>
     </div>
 
     <div class="header-link">
-      <a class="link-url" href="/store/{{ business.slug }}" target="_blank">
-        🌐 talabo.app/store/{{ business.slug }}
+      <a class="link-url" href="/book/{{ business.slug }}" target="_blank">
+        🌐 talabo.app/book/{{ business.slug }}
       </a>
       <button id="copyBtn" class="copy-btn" onclick="copyLink()">نسخ الرابط</button>
     </div>
@@ -259,17 +259,17 @@ body{
 
   <!-- Quick Actions -->
   <div class="quick-actions">
-    <a href="/waqti/bookings" class="qa-link qa-bookings">
+    <a href="/bookings" class="qa-link qa-bookings">
       📅 الحجوزات
       <span id="new-bookings-badge" class="qa-badge"></span>
     </a>
-    <a href="/waqti/services" class="qa-link qa-services">
+    <a href="/services" class="qa-link qa-services">
       ✂️ الخدمات
     </a>
-    <a href="/waqti/working-hours" class="qa-link qa-hours">
+    <a href="/working-hours" class="qa-link qa-hours">
       🕐 أوقات العمل
     </a>
-    <a href="/waqti/business-settings" class="qa-link qa-settings">
+    <a href="/business-settings" class="qa-link qa-settings">
       ⚙️ الإعدادات
     </a>
   </div>
@@ -311,7 +311,7 @@ body{
 <script>
 
 function copyLink(){
-  navigator.clipboard.writeText("https://talabo.app/store/{{ business.slug }}");
+  navigator.clipboard.writeText("https://talabo.app/book/{{ business.slug }}");
   let btn = document.getElementById("copyBtn");
   btn.textContent = "✓ تم النسخ";
   btn.classList.add("copied");
@@ -323,7 +323,7 @@ function copyLink(){
 
 async function loadStats(){
   try{
-    let res = await fetch("/waqti/admin-stats");
+    let res = await fetch("/admin-stats");
     let data = await res.json();
 
     document.getElementById("total-bookings").textContent = data.total_bookings;

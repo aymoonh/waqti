@@ -483,7 +483,7 @@ async function confirmBooking(){
   btn.textContent = "⏳ جاري الحجز...";
 
   try{
-    let res = await fetch("/waqti/bookings",{
+    let res = await fetch("/bookings",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
