@@ -8,6 +8,7 @@ if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
@@ -16,3 +17,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# إنشاء الجداول تلقائياً
+from models import Base
+Base.metadata.create_all(bind=engine)
