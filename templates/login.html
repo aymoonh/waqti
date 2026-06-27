@@ -142,7 +142,7 @@ button:hover{background:var(--green-dark);}
 
   <div class="register">
     ليس لديك حساب؟
-    <a href="/register">إنشاء حساب</a>
+    <a href="/waqti/register">إنشاء حساب</a>
   </div>
 
 </div>
@@ -159,7 +159,7 @@ async function login(){
     return;
   }
 
-  let response = await fetch("/login",{
+  let response = await fetch("/waqti/login",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({username, password})
@@ -168,7 +168,7 @@ async function login(){
   let data = await response.json();
 
   if(data.message === "Login successful"){
-    window.location = "/admin";
+    window.location = "/waqti/admin";
   } else {
     msg.textContent = "اسم المستخدم أو كلمة المرور غير صحيحة";
   }

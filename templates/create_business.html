@@ -307,7 +307,7 @@ button.loading .btn-label{display:none;}
     <img id="previewLogo" class="preview-logo" src="https://res.cloudinary.com/dsostxiei/image/upload/v1782521187/Waqti_Logo_ljaxhc.png" alt="">
     <div class="preview-info">
       <div class="preview-name" id="previewName">اسم نشاطك</div>
-      <div class="preview-slug" id="previewSlug">waqti.app/your-slug</div>
+      <div class="preview-slug" id="previewSlug">talabo.app/store/your-slug</div>
     </div>
     <span class="preview-label">معاينة حية</span>
   </div>
@@ -366,7 +366,7 @@ button.loading .btn-label{display:none;}
     <div class="field">
       <label class="field-label" for="slug">رابط صفحة الحجز</label>
       <div class="slug-wrap">
-        <span class="slug-prefix">waqti.app/</span>
+        <span class="slug-prefix">talabo.app/store/</span>
         <input id="slug" placeholder="salon-lamsa" oninput="onSlugInput()">
       </div>
       <div id="slugMsg" class="field-msg">حروف إنجليزية وأرقام وشرطات فقط</div>
@@ -415,7 +415,7 @@ function onSlugInput(){
   let input = document.getElementById("slug");
   let cleaned = input.value.toLowerCase().replace(/\s+/g,'-');
   if(cleaned !== input.value) input.value = cleaned;
-  previewSlug.textContent = "waqti.app/" + (input.value || "your-slug");
+  previewSlug.textContent = "talabo.app/store/" + (input.value || "your-slug");
   let msg = document.getElementById("slugMsg");
   if(input.value && !/^[a-z0-9-]+$/.test(input.value)){
     msg.classList.add("show");
@@ -481,12 +481,12 @@ async function submitBusiness(){
     if(fileInput.files.length > 0){
       let formData = new FormData();
       formData.append("file", fileInput.files[0]);
-      let uploadRes = await fetch("/upload-logo", {method:"POST", body:formData});
+      let uploadRes = await fetch("/waqti/upload-logo", {method:"POST", body:formData});
       let uploadData = await uploadRes.json();
       logoUrl = uploadData.logo_url;
     }
 
-    let response = await fetch("/create-business",{
+    let response = await fetch("/waqti/create-business",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({ name, whatsapp, slug, category: cat, logo_url: logoUrl })
@@ -495,7 +495,7 @@ async function submitBusiness(){
     let data = await response.json();
 
     if(response.ok){
-      window.location = "/admin";
+      window.location = "/waqti/admin";
     } else {
       msg.textContent = "❌ " + data.message;
       setLoading(false);

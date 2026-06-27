@@ -149,8 +149,8 @@ body{
       <div class="header-sub">{{ business.name }}</div>
     </div>
     <div class="header-actions">
-      <a href="/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
-      <a href="/logout" class="btn-pill btn-danger">🚪 خروج</a>
+      <a href="/waqti/admin" class="btn-pill btn-ghost">← لوحة التحكم</a>
+      <a href="/waqti/logout" class="btn-pill btn-danger">🚪 خروج</a>
     </div>
   </div>
 
@@ -218,7 +218,7 @@ body{
 <script>
 
 async function loadStats(){
-  let res  = await fetch("/stats-data");
+  let res  = await fetch("/waqti/stats-data");
   let data = await res.json();
 
   animateNum("s-total",     data.total);

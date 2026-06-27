@@ -176,7 +176,7 @@ button.loading .btn-label{display:none;}
 
   <div class="login">
     لديك حساب بالفعل؟
-    <a href="/login">تسجيل الدخول</a>
+    <a href="/waqti/login">تسجيل الدخول</a>
   </div>
 
 </div>
@@ -220,7 +220,7 @@ async function register(){
   setLoading(true);
 
   try{
-    let response = await fetch("/register",{
+    let response = await fetch("/waqti/register",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({username, password})
@@ -230,7 +230,7 @@ async function register(){
     if(data.message === "User Created"){
       msg.className = "success";
       msg.textContent = "✅ تم إنشاء الحساب بنجاح";
-      setTimeout(() => { window.location = "/login"; }, 1500);
+      setTimeout(() => { window.location = "/waqti/login"; }, 1500);
     } else {
       msg.className = "error";
       msg.textContent = "❌ " + data.message;
