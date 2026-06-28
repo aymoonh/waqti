@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import update
+from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from typing import Literal, Optional
@@ -576,8 +577,12 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
         created_at     = datetime.now(),
         tracking_code  = uuid.uuid4().hex[:10].upper()
     )
-    db.add(booking)
-    db.commit()
+    try:
+        db.add(booking)
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        return JSONResponse(status_code=400, content={"message": "هذا الوقت محجوز مسبقاً"})
     return {"message": "تم الحجز بنجاح", "tracking_code": booking.tracking_code}
 
 
