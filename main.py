@@ -114,9 +114,12 @@ class SelectPlan(BaseModel):
 
 # ========== Root redirect ==========
 
-@app.get("/")
-def root():
-    return RedirectResponse(url="/login")
+@app.get("/", response_class=HTMLResponse)
+def landing(request: Request, db: Session = Depends(get_db)):
+    user_id = request.session.get("user_id")
+    if user_id:
+        return RedirectResponse(url="/admin")
+    return templates.TemplateResponse(request=request, name="landing.html", context={})
 
 
 # ========== Auth Pages ==========
