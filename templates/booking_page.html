@@ -172,6 +172,22 @@ body{
 }
 .slot-btn:hover{border-color:var(--green);}
 .slot-btn.selected{border-color:var(--green);background:var(--green-tint);}
+.slot-btn.booked{
+  background:#fef2f2;
+  border-color:#fca5a5;
+  color:#dc2626;
+  cursor:not-allowed;
+  position:relative;
+}
+.slot-btn.booked::after{
+  content:"محجوز";
+  position:absolute;
+  top:-10px;right:50%;transform:translateX(50%);
+  background:#dc2626;color:white;
+  font-size:10px;font-weight:800;
+  padding:2px 8px;border-radius:999px;
+  white-space:nowrap;
+}
 
 .no-slots{
   text-align:center;padding:20px;
@@ -431,17 +447,29 @@ async function selectDate(dateStr, btn){
   slotsCard.style.display = "block";
   slotsGrid.innerHTML = `<div class="no-slots">⏳ جاري تحميل الأوقات...</div>`;
 
-  let res = await fetch(`/available-slots?business_id=${BUSINESS_ID}&date=${dateStr}&service_id=${selectedService.id}`);
+  let res = await fetch(`/available-slots?business_id=${BUSINESS_ID}&date=${dateStr}&service_id=${selectedService.id}&show_booked=1`);
   let data = await res.json();
 
-  if(!data.slots || data.slots.length === 0){
+  if((!data.slots || data.slots.length === 0) && (!data.booked || data.booked.length === 0)){
     slotsGrid.innerHTML = `<div class="no-slots">😔 لا توجد أوقات متاحة في هذا اليوم</div>`;
     return;
   }
 
-  slotsGrid.innerHTML = data.slots.map(slot => `
-    <div class="slot-btn" onclick="selectSlot('${slot}', this)">${slot}</div>
-  `).join("");
+  // دمج الأوقات المتاحة والمحجوزة مرتبة
+  let allSlots = [
+    ...(data.slots || []).map(s => ({time: s, booked: false})),
+    ...(data.booked || []).map(s => ({time: s, booked: true}))
+  ].sort((a,b) => a.time.localeCompare(b.time));
+
+  if(allSlots.length === 0){
+    slotsGrid.innerHTML = `<div class="no-slots">😔 لا توجد أوقات متاحة في هذا اليوم</div>`;
+    return;
+  }
+
+  slotsGrid.innerHTML = allSlots.map(slot => slot.booked
+    ? `<div class="slot-btn booked">${slot.time}</div>`
+    : `<div class="slot-btn" onclick="selectSlot('${slot.time}', this)">${slot.time}</div>`
+  ).join("");
 }
 
 function selectSlot(time, btn){

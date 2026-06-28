@@ -5,7 +5,6 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import update
-from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from typing import Literal, Optional
@@ -527,13 +526,16 @@ def get_available_slots(business_id: int, date: str, service_id: int, db: Sessio
         h, m = map(int, b.time.split(":"))
         booked_times.add(h * 60 + m)
 
-    slots, current = [], open_minutes
+    slots, booked, current = [], [], open_minutes
     while current + service.duration <= close_minutes:
+        time_str = f"{current//60:02d}:{current%60:02d}"
         if current not in booked_times:
-            slots.append(f"{current//60:02d}:{current%60:02d}")
+            slots.append(time_str)
+        else:
+            booked.append(time_str)
         current += service.duration
 
-    return {"slots": slots}
+    return {"slots": slots, "booked": booked}
 
 @app.post("/bookings")
 def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
@@ -577,12 +579,8 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
         created_at     = datetime.now(),
         tracking_code  = uuid.uuid4().hex[:10].upper()
     )
-    try:
-        db.add(booking)
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        return JSONResponse(status_code=400, content={"message": "هذا الوقت محجوز مسبقاً"})
+    db.add(booking)
+    db.commit()
     return {"message": "تم الحجز بنجاح", "tracking_code": booking.tracking_code}
 
 
