@@ -218,6 +218,39 @@ body{
   color:var(--ink-soft);font-size:15px;
 }
 
+/* Plan banner */
+.plan-banner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-radius:var(--radius-md);
+  margin-bottom:20px;flex-wrap:wrap;gap:12px;
+}
+.plan-banner.free{
+  background:var(--amber-tint);
+  border:1px solid rgba(217,119,6,.25);
+}
+.plan-banner.paid{
+  background:var(--green-tint);
+  border:1px solid rgba(27,200,74,.25);
+}
+.plan-banner.pending{
+  background:var(--accent-tint);
+  border:1px solid rgba(14,165,233,.25);
+}
+.plan-info{display:flex;align-items:center;gap:10px;}
+.plan-icon{font-size:22px;}
+.plan-text{font-size:14px;font-weight:700;}
+.plan-text span{font-size:12px;font-weight:600;color:var(--ink-soft);display:block;margin-top:2px;}
+.upgrade-btn{
+  padding:9px 20px;border-radius:10px;
+  background:var(--green);color:white;
+  text-decoration:none;font-weight:800;font-size:14px;
+  white-space:nowrap;transition:background .15s;
+}
+.upgrade-btn:hover{background:var(--green-dark);}
+.upgrade-btn.pending-btn{
+  background:var(--accent);
+}
+
 @media(max-width:760px){
   .quick-actions{grid-template-columns:repeat(2,1fr);}
   .header{padding:22px;}
@@ -256,6 +289,51 @@ body{
       <button id="copyBtn" class="copy-btn" onclick="copyLink()">نسخ الرابط</button>
     </div>
   </div>
+
+  <!-- Plan Banner -->
+  {% if plan == 'free' %}
+  <div class="plan-banner free">
+    <div class="plan-info">
+      <div class="plan-icon">🆓</div>
+      <div class="plan-text">
+        الخطة المجانية
+        <span>{{ max_bookings }} حجز شهرياً · {{ max_services }} خدمات</span>
+      </div>
+    </div>
+    <a href="/upgrade" class="upgrade-btn">🚀 ترقية الخطة</a>
+  </div>
+  {% elif plan in ('pending_monthly', 'pending_yearly') %}
+  <div class="plan-banner pending">
+    <div class="plan-info">
+      <div class="plan-icon">⏳</div>
+      <div class="plan-text">
+        طلب الترقية قيد المراجعة
+        <span>سيتم التفعيل بعد تأكيد الدفع</span>
+      </div>
+    </div>
+    <a href="/upgrade" class="upgrade-btn pending-btn">عرض الطلب</a>
+  </div>
+  {% elif plan == 'monthly' %}
+  <div class="plan-banner paid">
+    <div class="plan-info">
+      <div class="plan-icon">⭐</div>
+      <div class="plan-text">
+        الخطة الشهرية
+        <span>حجوزات وخدمات غير محدودة</span>
+      </div>
+    </div>
+  </div>
+  {% elif plan == 'yearly' %}
+  <div class="plan-banner paid">
+    <div class="plan-info">
+      <div class="plan-icon">💎</div>
+      <div class="plan-text">
+        الخطة السنوية
+        <span>حجوزات وخدمات غير محدودة</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 
   <!-- Quick Actions -->
   <div class="quick-actions">
