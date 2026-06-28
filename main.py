@@ -861,3 +861,10 @@ def track_booking(tracking_code: str, request: Request, db: Session = Depends(ge
             "service":  service
         }
     )
+    
+@app.get("/", response_class=HTMLResponse)
+def landing(request: Request):
+    user_id = request.session.get("user_id")
+    if user_id:
+        return RedirectResponse(url="/admin")
+    return templates.TemplateResponse(request=request, name="landing.html", context={})
